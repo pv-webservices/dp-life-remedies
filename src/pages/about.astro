@@ -1,0 +1,245 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import CTA from '../components/CTA.astro';
+import { business, audiences } from '../data/business';
+import { values } from '../data/content';
+import {
+  divisions,
+  productsIn,
+  countLabel,
+  productImage,
+} from '../data/products';
+import { brand, generated, generatedSrcset, largest } from '../data/media';
+const storage = generated('wholesale-storage');
+---
+
+<Layout
+  title="About Us"
+  description="Get to know DP Life Remedies, a pharmaceutical products wholesaler based in Ramgarh, Panchkula, Haryana. Health, trust and care guide our business approach."
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'About Us', path: '/about/' },
+  ]}
+>
+  <PageHero
+    eyebrow="About us"
+    title="Healthcare at the heart"
+    accent="of what we do."
+    text="DP Life Remedies brings a pharmaceutical and healthcare product portfolio together with a direct, professional approach to business enquiries."
+    crumbs={[{ name: 'About Us' }]}
+  >
+    <figure class="hero-figure">
+      <img
+        src={brand.family.src}
+        srcset={brand.family.srcset}
+        sizes="(max-width: 960px) 92vw, 40vw"
+        width={brand.family.width}
+        height={brand.family.height}
+        alt={brand.family.alt}
+        fetchpriority="high"
+      />
+      <figcaption class="glass">
+        <img src="/media/brand/logo-160.webp" width="160" height="115" alt="" />
+        Together for a healthier tomorrow
+      </figcaption>
+    </figure>
+  </PageHero>
+
+  <section class="section" aria-labelledby="story-title">
+    <div class="container about-grid">
+      <div class="about-media" data-reveal="left">
+        <figure class="about-main">
+          {storage ? (
+            <img
+              src={largest(storage).src}
+              srcset={generatedSrcset(storage)}
+              sizes="(max-width: 900px) 92vw, 44vw"
+              width={largest(storage).width}
+              height={largest(storage).height}
+              loading="lazy"
+              alt={storage.alt}
+            />
+          ) : (
+            <img
+              src={brand.doctor.src}
+              srcset={brand.doctor.srcset}
+              sizes="(max-width: 900px) 70vw, 30vw"
+              width={brand.doctor.width}
+              height={brand.doctor.height}
+              loading="lazy"
+              alt={brand.doctor.alt}
+            />
+          )}
+        </figure>
+        <div class="about-card">
+          <span class="icon-tile">
+            <Icon name="heart" size={24} />
+          </span>
+          <span>
+            <small>A shared focus on</small>
+            <strong>better healthcare</strong>
+          </span>
+        </div>
+      </div>
+      <div class="about-copy" data-reveal="right">
+        <p class="eyebrow">Rooted in Panchkula</p>
+        <h2 id="story-title">
+          A pharmaceutical <span class="accent">wholesale business.</span>
+        </h2>
+        <p class="lede">
+          DP Life Remedies is based in Village Ramgarh, District Panchkula,
+          Haryana. Our business focuses on pharmaceutical and healthcare
+          products.
+        </p>
+        <p>
+          Our portfolio includes tablet formulations, softgel capsules, syrups,
+          oral solutions and protein nutrition. We welcome enquiries from
+          pharmacies, hospitals, clinics, healthcare institutions and trade
+          partners who want to learn more about our portfolio and discuss their
+          requirements.
+        </p>
+        <ul class="audience-list">
+          {audiences.map(([icon, label]) => (
+            <li>
+              <span class="icon-tile blue">
+                <Icon name={icon} size={22} />
+              </span>
+              {label}
+            </li>
+          ))}
+        </ul>
+        <a class="btn" href="/product-divisions/">
+          Explore our portfolio <Icon name="arrow" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="section values-section on-dark"
+    aria-labelledby="values-title"
+  >
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <p class="eyebrow">Our brand philosophy</p>
+        <h2 id="values-title">
+          Three words. <span class="accent">One shared focus.</span>
+        </h2>
+      </div>
+      <ol class="values">
+        {values.map(([title, text], i) => (
+          <li data-reveal style={`--d: ${i * 100}ms`}>
+            <span class="value-num">0{i + 1}</span>
+            <h3>
+              {title}
+              <span>.</span>
+            </h3>
+            <p>{text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="offer-title">
+    <div class="container">
+      <div class="section-head split" data-reveal>
+        <div>
+          <p class="eyebrow">What we offer</p>
+          <h2 id="offer-title">
+            A portfolio organised <span class="accent">by dosage form.</span>
+          </h2>
+        </div>
+        <div class="head-aside">
+          <p>
+            Five product divisions, each with composition and pack information
+            ready for your enquiry.
+          </p>
+        </div>
+      </div>
+      <ul class="offer-list">
+        {divisions.map((d, i) => {
+          const items = productsIn(d.slug);
+          return (
+            <li data-reveal style={`--d: ${i * 60}ms`}>
+              <a href={`/product-divisions/${d.slug}/`}>
+                <span class="offer-num">0{i + 1}</span>
+                <span class="offer-name">
+                  <strong>{d.name}</strong>
+                  <small>{items.map((p) => p.name).join(' · ')}</small>
+                </span>
+                <span class="offer-thumb stage">
+                  <img
+                    src={productImage(items[0].slug, 320)}
+                    width="320"
+                    height="240"
+                    alt=""
+                    loading="lazy"
+                  />
+                </span>
+                <span class="offer-count">{countLabel(items.length)}</span>
+                <span class="offer-go">
+                  <Icon name="arrow-up-right" size={20} />
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section surface" aria-labelledby="office-title">
+    <div class="container office-card" data-reveal>
+      <div class="office-copy">
+        <p class="eyebrow">Our office</p>
+        <h2 id="office-title">
+          Come find us <span class="accent">in Ramgarh.</span>
+        </h2>
+        <address>
+          {business.addressLines.map((line) => (
+            <span>{line}</span>
+          ))}
+        </address>
+        <p class="footer-gst light">
+          <Icon name="badge" size={16} /> GSTIN{' '}
+          <strong>{business.gstin}</strong>
+        </p>
+        <div class="btn-row">
+          <a
+            class="btn navy"
+            href={business.maps}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get directions <Icon name="location" size={18} />
+          </a>
+          <a class="link-arrow" href="/contact/">
+            Contact our team <Icon name="arrow" size={16} />
+          </a>
+        </div>
+      </div>
+      <a
+        class="map-card"
+        href={business.maps}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open DP Life Remedies location in Google Maps"
+      >
+        <span class="map-grid" aria-hidden="true"></span>
+        <span class="map-road one" aria-hidden="true"></span>
+        <span class="map-road two" aria-hidden="true"></span>
+        <span class="map-pin">
+          <Icon name="location" size={30} />
+        </span>
+        <span class="map-label">
+          <strong>DP Life Remedies</strong>
+          <small>Ramgarh, Panchkula · Open in Google Maps</small>
+        </span>
+      </a>
+    </div>
+  </section>
+  <CTA />
+</Layout>

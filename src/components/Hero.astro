@@ -1,0 +1,125 @@
+---
+import Icon from './Icon.astro';
+import { brand } from '../data/media';
+import { business } from '../data/business';
+import { divisions, products, productImage } from '../data/products';
+const shelf = ['dpgest-300-sr', 'daybone', 'dppro-dha'].map((slug) =>
+  products.find((p) => p.slug === slug)!,
+);
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-bg" aria-hidden="true">
+    <span class="hero-orb one"></span>
+    <span class="hero-orb two"></span>
+    <svg class="hero-swoosh" viewBox="0 0 1440 220" preserveAspectRatio="none">
+      <path
+        d="M0 150C320 60 640 40 900 90s420 90 540 40v90H0Z"
+        fill="var(--blue-100)"
+      ></path>
+      <path
+        d="M0 190C360 110 720 100 1000 140s340 60 440 30v50H0Z"
+        fill="var(--green-500)"
+        opacity=".18"
+      ></path>
+    </svg>
+  </div>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="hero-kicker">
+        <span class="pulse" aria-hidden="true"></span>
+        Pharmaceutical products wholesaler · {business.locality}
+      </p>
+      <h1 id="hero-title">
+        Quality healthcare products,
+        <span class="accent">built on trust.</span>
+      </h1>
+      <p class="hero-lede">
+        DP Life Remedies brings together tablets, softgel capsules, syrups, oral
+        solutions and nutrition products for pharmacies, hospitals, clinics and
+        healthcare trade partners.
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="/product-divisions/">
+          Explore our products <Icon name="arrow" size={18} />
+        </a>
+        <a class="btn outline" href="/contact/#enquiry">
+          Send a trade enquiry
+        </a>
+      </div>
+      <dl class="hero-facts">
+        <div>
+          <dt>Product divisions</dt>
+          <dd>{divisions.length}</dd>
+        </div>
+        <div>
+          <dt>Branded formulations</dt>
+          <dd>{products.length}</dd>
+        </div>
+        <div>
+          <dt>GST registered</dt>
+          <dd class="gst">{business.gstin}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="hero-visual">
+      <figure class="hero-photo">
+        <img
+          src={brand.family.src}
+          srcset={brand.family.srcset}
+          sizes="(max-width: 900px) 92vw, 46vw"
+          width={brand.family.width}
+          height={brand.family.height}
+          alt={brand.family.alt}
+          fetchpriority="high"
+        />
+      </figure>
+      <div class="hero-badge glass">
+        <img src="/media/brand/logo-160.webp" width="160" height="115" alt="" />
+        <span>
+          <strong>Health • Trust • Care</strong>
+          <small>Together for a healthier tomorrow</small>
+        </span>
+      </div>
+      <a
+        class="hero-shelf"
+        href="/product-divisions/"
+        aria-label="Browse the DP Life Remedies product range"
+      >
+        <span class="hero-shelf-head">
+          <span>
+            <small>Our portfolio</small>
+            <strong>
+              {products.length} formulations · {divisions.length} divisions
+            </strong>
+          </span>
+          <span class="hero-shelf-arrow">
+            <Icon name="arrow-up-right" size={18} />
+          </span>
+        </span>
+        <span class="hero-shelf-row">
+          {shelf.map((p) => (
+            <span class={`stage ${p.color}`}>
+              <img
+                src={productImage(p.slug, 320)}
+                width="320"
+                height="240"
+                alt=""
+              />
+            </span>
+          ))}
+        </span>
+      </a>
+      <div class="hero-chip glass">
+        <span class="icon-tile">
+          <Icon name="handshake" size={22} />
+        </span>
+        <span>
+          <strong>Trade enquiries welcome</strong>
+          <small>Pharmacies · Hospitals · Clinics</small>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>

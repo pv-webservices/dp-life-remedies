@@ -1,0 +1,95 @@
+---
+import Icon from './Icon.astro';
+import {
+  divisionFor,
+  productImage,
+  productSrcset,
+  searchText,
+  type Product,
+} from '../data/products';
+interface Props {
+  product: Product;
+  index?: number;
+  hidden?: boolean;
+  sizes?: string;
+}
+const {
+  product: p,
+  index,
+  hidden = false,
+  sizes = '(max-width: 600px) 90vw, (max-width: 1100px) 45vw, 340px',
+} = Astro.props;
+const division = divisionFor(p.division);
+const href = `/products/${p.slug}/`;
+---
+
+<article
+  class="p-card"
+  data-product
+  data-name={p.name}
+  data-division={p.division}
+  data-form={p.form}
+  data-segment={p.segment}
+  data-search={searchText(p)}
+  data-order={index}
+  hidden={hidden}
+>
+  <a
+    class={`p-card-media stage ${p.color}`}
+    href={href}
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <img
+      src={productImage(p.slug, 640)}
+      srcset={productSrcset(p.slug)}
+      sizes={sizes}
+      width="640"
+      height="480"
+      loading="lazy"
+      decoding="async"
+      alt=""
+    />
+    {index !== undefined && (
+      <span class="p-card-num">{String(index + 1).padStart(2, '0')}</span>
+    )}
+    <span class="p-card-badge">
+      <Icon name={division.icon} size={14} />
+      {division.short}
+    </span>
+    <span class="p-card-view">
+      View product <Icon name="arrow-up-right" size={16} />
+    </span>
+  </a>
+  <div class="p-card-body">
+    <p class="p-card-segment">{p.segment}</p>
+    <h3>
+      <a href={href}>{p.name}</a>
+    </h3>
+    <p class="p-card-comp">
+      <span>Composition</span>
+      {p.summary}
+    </p>
+    <ul class="p-card-specs">
+      <li>
+        <Icon name="box" size={16} /> {p.pack}
+      </li>
+      <li>
+        <Icon name={division.icon} size={16} /> {p.form}
+      </li>
+    </ul>
+    <div class="p-card-actions">
+      <a class="link-arrow" href={href}>
+        View details <Icon name="arrow" size={16} />
+      </a>
+      <a
+        class="btn sm outline"
+        href={`/contact/?product=${p.slug}#enquiry`}
+        data-enquire={p.name}
+        aria-label={`Enquire about ${p.name}`}
+      >
+        Enquire
+      </a>
+    </div>
+  </div>
+</article>

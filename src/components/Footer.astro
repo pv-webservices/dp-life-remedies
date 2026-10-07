@@ -1,0 +1,122 @@
+---
+import Brand from './Brand.astro';
+import Icon from './Icon.astro';
+import { divisions } from '../data/products';
+import { business, whatsapp } from '../data/business';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer on-dark">
+  <svg
+    class="footer-wave"
+    viewBox="0 0 1440 80"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M0 80V40C240 0 480 0 720 22s480 46 720 6v52Z"
+      fill="currentColor"
+    ></path>
+  </svg>
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <Brand light />
+      <p>
+        Pharmaceutical and healthcare products. Professional conversations. A
+        shared focus on better healthcare.
+      </p>
+      <div class="footer-social">
+        <a href={`tel:${business.tel}`} aria-label={`Call ${business.phone}`}>
+          <Icon name="phone" size={18} />
+        </a>
+        <a
+          href={whatsapp()}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp DP Life Remedies"
+        >
+          <Icon name="whatsapp" size={18} />
+        </a>
+        <a
+          href={`mailto:${business.email}`}
+          aria-label={`Email ${business.email}`}
+        >
+          <Icon name="mail" size={18} />
+        </a>
+        <a
+          href={business.maps}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open our location in Google Maps"
+        >
+          <Icon name="location" size={18} />
+        </a>
+      </div>
+      <p class="footer-gst">
+        <Icon name="badge" size={16} /> GSTIN <strong>{business.gstin}</strong>
+      </p>
+    </div>
+    <nav aria-labelledby="footer-company">
+      <h2 id="footer-company">Company</h2>
+      <ul>
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/about/">About Us</a>
+        </li>
+        <li>
+          <a href="/why-us/">Why DP Life Remedies</a>
+        </li>
+        <li>
+          <a href="/product-divisions/">All Products</a>
+        </li>
+        <li>
+          <a href="/contact/">Contact Us</a>
+        </li>
+      </ul>
+    </nav>
+    <nav aria-labelledby="footer-divisions">
+      <h2 id="footer-divisions">Product divisions</h2>
+      <ul>
+        {divisions.map((d) => (
+          <li>
+            <a href={`/product-divisions/${d.slug}/`}>{d.name}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="footer-contact">
+      <h2>Get in touch</h2>
+      <a href={business.maps} target="_blank" rel="noopener noreferrer">
+        <Icon name="location" size={18} />
+        <span>{business.address}</span>
+      </a>
+      <a href={`tel:${business.tel}`}>
+        <Icon name="phone" size={18} />
+        <span>{business.phone}</span>
+      </a>
+      <a href={`mailto:${business.email}`}>
+        <Icon name="mail" size={18} />
+        <span>{business.email}</span>
+      </a>
+    </div>
+  </div>
+  <p class="footer-watermark" aria-hidden="true">
+    Health • Trust • Care
+  </p>
+  <div class="container footer-bottom">
+    <p>© {year} DP Life Remedies. All rights reserved.</p>
+    <ul>
+      <li>
+        <a href="/privacy-policy/">Privacy Policy</a>
+      </li>
+      <li>
+        <a href="/terms/">Terms &amp; Conditions</a>
+      </li>
+      <li>
+        <a href="/disclaimer/">Disclaimer</a>
+      </li>
+    </ul>
+  </div>
+</footer>

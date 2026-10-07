@@ -1,0 +1,43 @@
+---
+import Breadcrumb from './Breadcrumb.astro';
+interface Props {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+  text: string;
+  crumbs: { name: string; path?: string }[];
+  compact?: boolean;
+}
+const { eyebrow, title, accent, text, crumbs, compact = false } = Astro.props;
+const hasVisual = Astro.slots.has('default');
+---
+
+<section
+  class:list={['page-hero on-dark', { compact, 'has-visual': hasVisual }]}
+>
+  <div class="page-hero-bg" aria-hidden="true">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path
+        d="M0 120V70C300 10 620 0 900 40s420 60 540 30v50Z"
+        fill="var(--white)"
+      ></path>
+    </svg>
+  </div>
+  <div class="container page-hero-grid">
+    <div class="page-hero-copy">
+      <Breadcrumb items={crumbs} />
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>
+        {title}
+        {accent && <span class="accent"> {accent}</span>}
+      </h1>
+      <p class="lede">{text}</p>
+      <slot name="actions" />
+    </div>
+    {hasVisual && (
+      <div class="page-hero-visual">
+        <slot />
+      </div>
+    )}
+  </div>
+</section>

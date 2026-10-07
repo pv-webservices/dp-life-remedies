@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { divisions } from '../data/products';
+---
+
+<Layout title="Page Not Found" noindex>
+  <section class="section not-found">
+    <div class="container narrow">
+      <span class="not-found-code" aria-hidden="true" data-code="404"></span>
+      <p class="eyebrow">Page not found</p>
+      <h1>
+        Let’s get you <span class="accent">back on track.</span>
+      </h1>
+      <p class="lede">
+        We couldn’t find that page. Explore our product divisions or contact our
+        team.
+      </p>
+      <div class="btn-row">
+        <a class="btn" href="/product-divisions/">
+          Explore products <Icon name="arrow" size={18} />
+        </a>
+        <a class="btn outline" href="/">
+          Back to home
+        </a>
+      </div>
+      <ul class="not-found-links">
+        {divisions.map((d) => (
+          <li>
+            <a href={`/product-divisions/${d.slug}/`}>
+              <Icon name={d.icon} size={18} /> {d.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

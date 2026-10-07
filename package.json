@@ -1,0 +1,33 @@
+{
+  "name": "dp-life-remedies",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro build",
+    "preview": "astro preview --host 127.0.0.1",
+    "check": "astro check",
+    "assets": "node scripts/prepare-assets.mjs",
+    "verify": "node scripts/verify.mjs",
+    "verify:seo": "node scripts/verify-seo.mjs",
+    "format": "prettier --write src scripts *.md",
+    "images": "node scripts/generate-images.mjs",
+    "images:plan": "node scripts/generate-images.mjs --dry-run"
+  },
+  "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
+    "astro": "^7.3.6"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.13.0",
+    "playwright": "^1.63.0",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3"
+  }
+}

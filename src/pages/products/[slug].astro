@@ -1,0 +1,383 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import ContactPanel from '../../components/ContactPanel.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import {
+  products,
+  divisionFor,
+  relatedFor,
+  productsIn,
+  productImage,
+  productSrcset,
+  countLabel,
+} from '../../data/products';
+import { principles } from '../../data/content';
+import { business, whatsapp } from '../../data/business';
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+const { product: p } = Astro.props;
+const division = divisionFor(p.division);
+const related = relatedFor(p);
+const siblings = productsIn(p.division).filter((x) => x.slug !== p.slug);
+const specs = [
+  ['pill', 'Dosage form', p.form],
+  ['box', 'Pack size', p.pack],
+  [division.icon, 'Division', division.name],
+  ['leaf', 'Segment', p.segment],
+] as const;
+---
+
+<Layout
+  title={`${p.name} — ${p.form}`}
+  description={`${p.name}: ${p.summary}. ${p.form}, ${p.pack}. View composition and pack details and send a trade enquiry to DP Life Remedies.`}
+  image={productImage(p.slug, 1080)}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Product Divisions', path: '/product-divisions/' },
+    { name: division.name, path: `/product-divisions/${division.slug}/` },
+    { name: p.name, path: `/products/${p.slug}/` },
+  ]}
+>
+  <section class="pd-hero">
+    <div class="container">
+      <Breadcrumb
+        dark
+        items={[
+          { name: 'Product Divisions', path: '/product-divisions/' },
+          { name: division.name, path: `/product-divisions/${division.slug}/` },
+          { name: p.name },
+        ]}
+      />
+      <div class="pd-grid">
+        <div class="pd-gallery">
+          <button
+            type="button"
+            class={`pd-stage stage ${p.color}`}
+            data-lightbox-open
+            aria-label={`Enlarge ${p.name} packaging`}
+          >
+            <img
+              src={productImage(p.slug, 1080)}
+              srcset={productSrcset(p.slug)}
+              sizes="(max-width: 960px) 92vw, 46vw"
+              width="1080"
+              height="810"
+              alt={`${p.name} ${p.form.toLowerCase()} packaging`}
+              fetchpriority="high"
+            />
+            <span class="pd-zoom">
+              <Icon name="zoom" size={18} /> Enlarge
+            </span>
+          </button>
+          <p class="pd-caption">
+            <Icon name="info" size={15} />
+            Packaging as supplied by DP Life Remedies. Confirm the current label
+            with our team.
+          </p>
+        </div>
+        <div class="pd-info">
+          <div class="pd-tags">
+            <a class="tag" href={`/product-divisions/${division.slug}/`}>
+              <Icon name={division.icon} size={14} />
+              {division.name}
+            </a>
+            <span class="tag green">{p.segment}</span>
+          </div>
+          <h1>{p.name}</h1>
+          <p class="pd-summary">{p.summary}</p>
+          <ul class="pd-specs">
+            {specs.map(([icon, label, value]) => (
+              <li>
+                <span class="icon-tile">
+                  <Icon name={icon} size={20} />
+                </span>
+                <span class="pd-spec-label">{label}</span>
+                <strong>{value}</strong>
+              </li>
+            ))}
+          </ul>
+          <div class="pd-actions">
+            <a class="btn" href="#enquiry">
+              Send product enquiry <Icon name="arrow" size={18} />
+            </a>
+            <a
+              class="btn whatsapp"
+              href={whatsapp(p.name)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="whatsapp" size={18} /> WhatsApp
+            </a>
+          </div>
+          <a class="pd-call" href={`tel:${business.tel}`}>
+            <span>
+              <Icon name="phone" size={18} />
+            </span>
+            <span>
+              <small>Prefer to talk? Call our team</small>
+              {business.phone}
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pd-details" aria-label="Product information">
+    <div class="container pd-details-grid">
+      <div class="tabs" data-tabs>
+        <div
+          class="tab-list"
+          role="tablist"
+          aria-label={`${p.name} information`}
+        >
+          <button
+            type="button"
+            role="tab"
+            id="tab-overview"
+            aria-controls="panel-overview"
+            aria-selected="true"
+          >
+            Overview
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="tab-composition"
+            aria-controls="panel-composition"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Composition
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="tab-professional"
+            aria-controls="panel-professional"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            For professionals
+          </button>
+        </div>
+        <div
+          class="tab-panel"
+          role="tabpanel"
+          id="panel-overview"
+          aria-labelledby="tab-overview"
+        >
+          <h2>Overview</h2>
+          <p>
+            {p.name} is part of the DP Life Remedies{' '}
+            {division.name.toLowerCase()} portfolio — {p.summary}.
+          </p>
+          <p>
+            Presented as {p.form.toLowerCase()} in a {p.pack} pack.
+          </p>
+          {p.note && <p class="pd-note">{p.note}</p>}
+          <p class="pd-ing-label">Key ingredients</p>
+          <ul class="pd-ingredients">
+            {p.composition.map(([ingredient]) => (
+              <li>
+                <Icon name="check" size={16} /> {ingredient}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div
+          class="tab-panel"
+          role="tabpanel"
+          id="panel-composition"
+          aria-labelledby="tab-composition"
+        >
+          <h2>Composition &amp; specifications</h2>
+          <p class="pd-basis">
+            {p.basis ?? 'Ingredients listed in the supplied material.'}
+          </p>
+          <table class="comp-table">
+            <caption class="sr-only">{p.name}composition</caption>
+            <thead>
+              <tr>
+                <th scope="col">Ingredient</th>
+                <th scope="col">{p.basis ? 'Quantity' : 'Details'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {p.composition.map(([ingredient, amount]) => (
+                <tr>
+                  <th scope="row">{ingredient}</th>
+                  <td>{amount || 'Contact for confirmed strength'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="spec-note">
+            Confirm the latest label and complete composition with our team
+            before a trade decision.
+          </p>
+        </div>
+        <div
+          class="tab-panel"
+          role="tabpanel"
+          id="panel-professional"
+          aria-labelledby="tab-professional"
+        >
+          <h2>Professional information</h2>
+          <p>
+            Product information is intended for healthcare and trade
+            professionals. Use medicines only as directed by a qualified
+            healthcare professional.
+          </p>
+          <p>
+            For current product documentation, availability and supply details,
+            contact DP Life Remedies. This website does not provide individual
+            medical advice.
+          </p>
+          <a class="link-arrow" href="/disclaimer/">
+            Read the product disclaimer <Icon name="arrow" size={16} />
+          </a>
+        </div>
+      </div>
+      <aside class="pd-aside">
+        <div class="pd-division-card">
+          <span class="icon-tile">
+            <Icon name={division.icon} size={24} />
+          </span>
+          <p class="pd-aside-label">{division.name} division</p>
+          <p>{division.text}</p>
+          {siblings.length > 0 && (
+            <ul>
+              {siblings.map((s) => (
+                <li>
+                  <a href={`/products/${s.slug}/`}>
+                    <span class={`stage ${s.color}`}>
+                      <img
+                        src={productImage(s.slug, 320)}
+                        width="320"
+                        height="240"
+                        alt=""
+                        loading="lazy"
+                      />
+                    </span>
+                    <span>
+                      <strong>{s.name}</strong>
+                      <small>{s.pack}</small>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          <a
+            class="btn navy sm block"
+            href={`/product-divisions/${division.slug}/`}
+          >
+            View {division.name.toLowerCase()} ·{' '}
+            {countLabel(productsIn(division.slug).length)}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="partner-strip on-dark" aria-labelledby="partner-title">
+    <div class="container">
+      <div class="partner-head">
+        <p class="eyebrow">Why partner with us</p>
+        <h2 id="partner-title">
+          Health. Trust. Care.{' '}
+          <span class="accent">In every conversation.</span>
+        </h2>
+      </div>
+      <ul class="partner-list">
+        {principles.map(([icon, title, text]) => (
+          <li data-reveal>
+            <span class="icon-tile">
+              <Icon name={icon} size={22} />
+            </span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section
+    class="section surface"
+    id="enquiry"
+    aria-label={`Enquire about ${p.name}`}
+  >
+    <div class="container enquiry-grid">
+      <ContactPanel
+        title="A direct conversation. A helpful next step."
+        text="Our team can discuss specifications, pack information and your business requirement."
+        product={p.name}
+      />
+      <div class="form-card" data-reveal>
+        <EnquiryForm product={p.name} />
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section" aria-labelledby="related-title">
+      <div class="container">
+        <div class="section-head split" data-reveal>
+          <div>
+            <p class="eyebrow">Continue exploring</p>
+            <h2 id="related-title">
+              Related <span class="accent">products.</span>
+            </h2>
+          </div>
+          <div class="head-aside">
+            <p>From the same product division or therapeutic segment.</p>
+            <a class="link-arrow" href="/product-divisions/">
+              Explore all products <Icon name="arrow" size={16} />
+            </a>
+          </div>
+        </div>
+        <div class="p-grid related-grid">
+          {related.map((item) => (
+            <ProductCard product={item} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <dialog
+    class="lightbox"
+    data-lightbox
+    aria-label={`${p.name} packaging, enlarged`}
+  >
+    <div class="lightbox-inner">
+      <button
+        type="button"
+        class="icon-btn lightbox-close"
+        data-lightbox-close
+        aria-label="Close enlarged image"
+      >
+        <Icon name="close" size={20} />
+      </button>
+      <img
+        src={productImage(p.slug, 1080)}
+        width="1080"
+        height="810"
+        alt={`${p.name} packaging, enlarged`}
+        loading="lazy"
+      />
+      <p>
+        {p.name} · {p.form} · {p.pack}
+      </p>
+    </div>
+  </dialog>
+</Layout>

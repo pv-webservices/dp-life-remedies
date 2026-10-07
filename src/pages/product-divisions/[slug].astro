@@ -1,0 +1,59 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProductExplorer from '../../components/ProductExplorer.astro';
+import PackCluster from '../../components/PackCluster.astro';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import {
+  divisions,
+  productsIn,
+  countLabel,
+  productImage,
+} from '../../data/products';
+export function getStaticPaths() {
+  return divisions.map((division) => ({
+    params: { slug: division.slug },
+    props: { division },
+  }));
+}
+const { division } = Astro.props;
+const items = productsIn(division.slug);
+const segments = [...new Set(items.map((p) => p.segment))];
+---
+
+<Layout
+  title={`${division.name} — Product Range`}
+  description={`${division.text} Browse ${countLabel(items.length)} from DP Life Remedies with composition and pack details.`}
+  image={productImage(items[0].slug, 1080)}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Product Divisions', path: '/product-divisions/' },
+    { name: division.name, path: `/product-divisions/${division.slug}/` },
+  ]}
+>
+  <PageHero
+    eyebrow="Dosage form division"
+    title={division.name}
+    accent="range."
+    text={division.text}
+    crumbs={[
+      { name: 'Product Divisions', path: '/product-divisions/' },
+      { name: division.name },
+    ]}
+  >
+    <div slot="actions" class="hero-stats">
+      <span>
+        <Icon name={division.icon} size={16} /> {countLabel(items.length)}
+      </span>
+      {segments.map((s) => (
+        <span>
+          <Icon name="leaf" size={16} /> {s}
+        </span>
+      ))}
+    </div>
+    <PackCluster items={items} />
+  </PageHero>
+  <ProductExplorer active={division.slug} />
+  <CTA />
+</Layout>

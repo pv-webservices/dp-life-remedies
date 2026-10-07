@@ -1,0 +1,172 @@
+---
+import Icon from './Icon.astro';
+import { products } from '../data/products';
+import { business } from '../data/business';
+interface Props {
+  product?: string;
+  compact?: boolean;
+  title?: string;
+  text?: string;
+}
+const {
+  product = '',
+  compact = false,
+  title = product
+    ? `Enquire about ${product}`
+    : 'Tell us what you’re looking for.',
+  text = 'Share your product or trade requirement with our team.',
+} = Astro.props;
+---
+
+<form class:list={['enquiry-form', { compact }]} data-enquiry>
+  <div class="form-head">
+    <p class="eyebrow">Business enquiry</p>
+    <h2 class="form-title">{title}</h2>
+    <p>{text}</p>
+  </div>
+  <div class="form-grid">
+    <label class="field">
+      <span>
+        Full name <b aria-hidden="true">*</b>
+      </span>
+      <input
+        name="name"
+        autocomplete="name"
+        required
+        maxlength="100"
+        placeholder="Your full name"
+      />
+    </label>
+    <label class="field">
+      <span>
+        Mobile number <b aria-hidden="true">*</b>
+      </span>
+      <input
+        name="phone"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel"
+        required
+        maxlength="20"
+        placeholder="+91 98XXX XXXXX"
+      />
+    </label>
+    {!compact && (
+      <label class="field">
+        <span>Email address</span>
+        <input
+          name="email"
+          type="email"
+          autocomplete="email"
+          maxlength="150"
+          placeholder="name@business.com"
+        />
+      </label>
+    )}
+    <label class="field">
+      <span>
+        Business / organisation <b aria-hidden="true">*</b>
+      </span>
+      <input
+        name="business"
+        autocomplete="organization"
+        required
+        maxlength="150"
+        placeholder="Pharmacy, clinic or organisation"
+      />
+    </label>
+    {!compact && (
+      <label class="field">
+        <span>City / state</span>
+        <input
+          name="city"
+          autocomplete="address-level2"
+          maxlength="100"
+          placeholder="e.g. Panchkula, Haryana"
+        />
+      </label>
+    )}
+    {!compact && (
+      <label class="field">
+        <span>Enquiry type</span>
+        <select name="type">
+          <option>Product information</option>
+          <option>Wholesale requirement</option>
+          <option>Trade partnership</option>
+          <option>General enquiry</option>
+        </select>
+      </label>
+    )}
+    <label class:list={['field', { 'span-2': !compact }]}>
+      <span>Product of interest</span>
+      <select name="product" data-product-select>
+        <option value="">General / multiple products</option>
+        {products.map((p) => (
+          <option
+            value={p.name}
+            data-slug={p.slug}
+            selected={p.name === product}
+          >
+            {p.name}
+          </option>
+        ))}
+      </select>
+    </label>
+    <label class:list={['field', { 'span-2': !compact }]}>
+      <span>
+        Requirement / message <b aria-hidden="true">*</b>
+      </span>
+      <textarea
+        name="message"
+        required
+        minlength="10"
+        maxlength="2000"
+        rows={compact ? 3 : 4}
+        placeholder="Products, pack details or business requirement. Please don’t include patient or medical records."
+      ></textarea>
+    </label>
+  </div>
+  <label class="consent">
+    <input type="checkbox" name="consent" required />
+    <span>
+      I agree to the use of my details for this business enquiry and have read
+      the <a href="/privacy-policy/">Privacy Policy</a>.
+    </span>
+  </label>
+  <div class="form-actions">
+    <button type="submit" class="btn" name="channel" value="email">
+      Prepare email <Icon name="arrow" size={18} />
+    </button>
+    <button type="submit" class="btn whatsapp" name="channel" value="whatsapp">
+      <Icon name="whatsapp" size={18} /> WhatsApp
+    </button>
+  </div>
+  <p class="form-note">
+    <Icon name="info" size={15} />
+    This prepares an editable draft in your email or WhatsApp app — you review
+    and send it. Fields marked * are required.
+  </p>
+  <div class="draft-panel" data-draft-panel hidden>
+    <p class="draft-status" role="status">
+      <Icon name="check" size={18} /> Your enquiry draft is ready. Review it,
+      then open your app to send.
+    </p>
+    <pre data-draft-text></pre>
+    <div class="form-actions">
+      <a data-draft-link class="btn navy">
+        Open draft <Icon name="arrow" size={18} />
+      </a>
+      <button type="button" class="btn outline" data-copy>
+        Copy enquiry
+      </button>
+    </div>
+    <p class="copy-status" data-copy-status role="status"></p>
+  </div>
+</form>
+<noscript>
+  <p class="notice">
+    Enable JavaScript to prepare an enquiry draft, or
+    <a href={`mailto:${business.email}`}>email us directly</a> or call
+    <a href={`tel:${business.tel}`}>{business.phone}</a>.
+  </p>
+</noscript>

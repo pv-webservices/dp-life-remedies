@@ -1,0 +1,146 @@
+{
+  "wholesale-storage": {
+    "alt": "Organised pharmaceutical storage shelves with neatly stacked medicine cartons",
+    "orientation": "landscape",
+    "model": "gpt-image-2.5-sunburst",
+    "quality": "high",
+    "files": [
+      {
+        "src": "/media/generated/wholesale-storage-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/media/generated/wholesale-storage-1536.webp",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  },
+  "pharmacy-counter": {
+    "alt": "Pharmacist arranging medicine cartons at a bright pharmacy counter",
+    "orientation": "landscape",
+    "model": "gpt-image-2.5-sunburst",
+    "quality": "high",
+    "files": [
+      {
+        "src": "/media/generated/pharmacy-counter-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/media/generated/pharmacy-counter-1536.webp",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  },
+  "division-tablets": {
+    "alt": "White tablets and blister packs arranged on a pale blue surface",
+    "orientation": "landscape",
+    "model": "gpt-image-2.5-flare",
+    "quality": "medium",
+    "files": [
+      {
+        "src": "/media/generated/division-tablets-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/media/generated/division-tablets-1536.webp",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  },
+  "division-softgel-capsules": {
+    "alt": "Amber softgel capsules on a soft white surface",
+    "orientation": "landscape",
+    "model": "gpt-image-2.5-flare",
+    "quality": "medium",
+    "files": [
+      {
+        "src": "/media/generated/division-softgel-capsules-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/media/generated/division-softgel-capsules-1536.webp",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  },
+  "division-syrups": {
+    "alt": "Amber syrup bottle and measuring cup on a light surface",
+    "orientation": "landscape",
+    "model": "gpt-image-2.5-flare",
+    "quality": "medium",
+    "files": [
+      {
+        "src": "/media/generated/division-syrups-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/media/generated/division-syrups-1536.webp",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  },
+  "division-oral-solutions": {
+    "alt": "Small amber oral solution bottles with a measuring spoon on a bright surface",
+    "orientation": "landscape",
+    "model": "gpt-image-2.5-flare",
+    "quality": "medium",
+    "files": [
+      {
+        "src": "/media/generated/division-oral-solutions-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/media/generated/division-oral-solutions-1536.webp",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  },
+  "division-protein-nutrition": {
+    "alt": "Scoop of chocolate protein powder with oats and almonds",
+    "orientation": "landscape",
+    "model": "gpt-image-2.5-flare",
+    "quality": "medium",
+    "files": [
+      {
+        "src": "/media/generated/division-protein-nutrition-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/media/generated/division-protein-nutrition-1536.webp",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  },
+  "cta-texture": {
+    "alt": "",
+    "orientation": "landscape",
+    "model": "gpt-image-2.5-flare",
+    "quality": "medium",
+    "files": [
+      {
+        "src": "/media/generated/cta-texture-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/media/generated/cta-texture-1536.webp",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  }
+}

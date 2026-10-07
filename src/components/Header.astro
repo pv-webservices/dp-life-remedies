@@ -1,0 +1,260 @@
+---
+import Brand from './Brand.astro';
+import Icon from './Icon.astro';
+import {
+  divisions,
+  products,
+  productsIn,
+  countLabel,
+  productImage,
+  divisionFor,
+} from '../data/products';
+import { business, whatsapp } from '../data/business';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+const productsActive =
+  path.startsWith('/products/') || path.startsWith('/product-divisions/');
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/about/', label: 'About Us' },
+  { href: '/why-us/', label: 'Why Us' },
+  { href: '/contact/', label: 'Contact' },
+];
+const featured = ['dpgest-300-sr', 'daybone', 'dp-q10'].map((slug) =>
+  products.find((p) => p.slug === slug)!,
+);
+---
+
+<div class="topbar">
+  <div class="container topbar-row">
+    <p class="topbar-note">
+      <Icon name="shield" size={15} />
+      Pharmaceutical &amp; healthcare products wholesaler
+    </p>
+    <div class="topbar-links">
+      <a href={business.maps} target="_blank" rel="noopener noreferrer">
+        <Icon name="location" size={15} />
+        {business.locality}
+      </a>
+      <a href={`mailto:${business.email}`}>
+        <Icon name="mail" size={15} />
+        {business.email}
+      </a>
+      <a href={`tel:${business.tel}`}>
+        <Icon name="phone" size={15} />
+        {business.phone}
+      </a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" data-header>
+  <div class="container header-row">
+    <Brand />
+    <nav class="main-nav" aria-label="Main">
+      <ul>
+        {links.slice(0, 2).map((l) => (
+          <li>
+            <a
+              href={l.href}
+              aria-current={isCurrent(l.href) ? 'page' : undefined}
+            >
+              {l.label}
+            </a>
+          </li>
+        ))}
+        <li>
+          <details class="mega-wrap" data-mega>
+            <summary class:list={{ current: productsActive }}>
+              Products <Icon name="down" size={16} />
+            </summary>
+            <div class="mega">
+              <div class="mega-col">
+                <p class="mega-label">Product divisions</p>
+                <ul class="mega-divisions">
+                  {divisions.map((d) => (
+                    <li>
+                      <a href={`/product-divisions/${d.slug}/`}>
+                        <span class="icon-tile">
+                          <Icon name={d.icon} size={22} />
+                        </span>
+                        <span>
+                          <strong>{d.name}</strong>
+                          <small>{countLabel(productsIn(d.slug).length)}</small>
+                        </span>
+                        <Icon name="arrow" size={16} class="mega-arrow" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div class="mega-col">
+                <p class="mega-label">Featured formulations</p>
+                <ul class="mega-products">
+                  {featured.map((p) => (
+                    <li>
+                      <a href={`/products/${p.slug}/`}>
+                        <span class={`stage ${p.color}`}>
+                          <img
+                            src={productImage(p.slug, 320)}
+                            width="320"
+                            height="240"
+                            alt=""
+                            loading="lazy"
+                          />
+                        </span>
+                        <span>
+                          <strong>{p.name}</strong>
+                          <small>
+                            {divisionFor(p.division).name} · {p.pack}
+                          </small>
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <a class="link-arrow" href="/product-divisions/">
+                  Browse all {products.length} products
+                  <Icon name="arrow" size={16} />
+                </a>
+              </div>
+              <div class="mega-cta on-dark">
+                <span class="icon-tile">
+                  <Icon name="clipboard" size={24} />
+                </span>
+                <p class="mega-cta-title">Need product or pack details?</p>
+                <p>
+                  Talk to our team about specifications, availability and your
+                  wholesale requirement.
+                </p>
+                <a class="btn light sm" href="/contact/#enquiry">
+                  Send an enquiry <Icon name="arrow" size={16} />
+                </a>
+                <a class="mega-phone" href={`tel:${business.tel}`}>
+                  <Icon name="phone" size={16} />
+                  {business.phone}
+                </a>
+              </div>
+            </div>
+          </details>
+        </li>
+        {links.slice(2).map((l) => (
+          <li>
+            <a
+              href={l.href}
+              aria-current={isCurrent(l.href) ? 'page' : undefined}
+            >
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="header-phone" href={`tel:${business.tel}`}>
+        <span class="header-phone-icon">
+          <Icon name="phone" size={18} />
+        </span>
+        <span>
+          <small>Call our team</small>
+          <strong>{business.phone}</strong>
+        </span>
+      </a>
+      <a class="btn sm header-cta" href="/contact/#enquiry">
+        Send enquiry <Icon name="arrow" size={16} />
+      </a>
+      <button
+        class="menu-btn"
+        type="button"
+        aria-label="Open menu"
+        aria-controls="site-drawer"
+        aria-expanded="false"
+        data-drawer-open
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<dialog class="drawer" id="site-drawer" aria-label="Site menu" data-drawer>
+  <div class="drawer-panel">
+    <div class="drawer-head">
+      <Brand />
+      <button
+        class="icon-btn"
+        type="button"
+        aria-label="Close menu"
+        data-drawer-close
+      >
+        <Icon name="close" size={20} />
+      </button>
+    </div>
+    <nav class="drawer-nav" aria-label="Mobile">
+      <a href="/" aria-current={path === '/' ? 'page' : undefined}>
+        Home
+      </a>
+      <a
+        href="/about/"
+        aria-current={isCurrent('/about/') ? 'page' : undefined}
+      >
+        About Us
+      </a>
+      <a
+        href="/product-divisions/"
+        aria-current={productsActive ? 'page' : undefined}
+      >
+        All Products
+      </a>
+      <a
+        href="/why-us/"
+        aria-current={isCurrent('/why-us/') ? 'page' : undefined}
+      >
+        Why Us
+      </a>
+      <a
+        href="/contact/"
+        aria-current={isCurrent('/contact/') ? 'page' : undefined}
+      >
+        Contact
+      </a>
+    </nav>
+    <p class="drawer-label">Product divisions</p>
+    <ul class="drawer-divisions">
+      {divisions.map((d) => (
+        <li>
+          <a href={`/product-divisions/${d.slug}/`}>
+            <Icon name={d.icon} size={20} />
+            {d.name}
+            <small>{productsIn(d.slug).length}</small>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="drawer-actions">
+      <a class="btn block" href="/contact/#enquiry">
+        Send an enquiry <Icon name="arrow" size={18} />
+      </a>
+      <a
+        class="btn whatsapp block"
+        href={whatsapp()}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="whatsapp" size={18} /> WhatsApp us
+      </a>
+      <a class="btn outline block" href={`tel:${business.tel}`}>
+        <Icon name="phone" size={18} />
+        {business.phone}
+      </a>
+    </div>
+    <p class="drawer-address">
+      <Icon name="location" size={16} />
+      {business.address}
+    </p>
+  </div>
+</dialog>

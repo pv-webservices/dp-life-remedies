@@ -1,0 +1,82 @@
+---
+import Icon from './Icon.astro';
+import { business, whatsapp } from '../data/business';
+import { generated, largest } from '../data/media';
+interface Props {
+  title?: string;
+  accent?: string;
+  text?: string;
+}
+const {
+  title = 'Let’s work together for',
+  accent = 'better healthcare.',
+  text = 'Product information, wholesale requirements and business enquiries — our team is a call or message away.',
+} = Astro.props;
+const texture = generated('cta-texture');
+---
+
+<section class="cta-band" aria-labelledby="cta-title">
+  <div class="container">
+    <div
+      class="cta-card on-dark"
+      data-reveal="zoom"
+      style={
+        texture ? `--cta-image: url('${largest(texture).src}')` : undefined
+      }
+    >
+      <svg class="cta-swoosh" viewBox="0 0 600 400" aria-hidden="true">
+        <path
+          d="M80 400C140 220 300 120 600 90"
+          stroke="var(--lime-400)"
+          stroke-width="2"
+          fill="none"
+          opacity=".5"
+        ></path>
+        <path
+          d="M0 400C110 200 320 70 600 40"
+          stroke="var(--white)"
+          stroke-width="1"
+          fill="none"
+          opacity=".18"
+        ></path>
+        <path
+          d="M200 400C260 280 400 200 600 180"
+          stroke="var(--green-500)"
+          stroke-width="44"
+          fill="none"
+          opacity=".22"
+          stroke-linecap="round"
+        ></path>
+      </svg>
+      <div class="cta-copy">
+        <p class="eyebrow">Health • Trust • Care</p>
+        <h2 id="cta-title">
+          {title} <span class="accent">{accent}</span>
+        </h2>
+        <p>{text}</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn light" href="/contact/#enquiry">
+          Send an enquiry <Icon name="arrow" size={18} />
+        </a>
+        <a
+          class="btn ghost-light"
+          href={whatsapp()}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Icon name="whatsapp" size={18} /> WhatsApp
+        </a>
+        <a class="cta-phone" href={`tel:${business.tel}`}>
+          <span>
+            <Icon name="phone" size={18} />
+          </span>
+          <span>
+            <small>Or call us directly</small>
+            {business.phone}
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

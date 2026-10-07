@@ -1,0 +1,147 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Icon from '../components/Icon.astro';
+import { business, whatsapp } from '../data/business';
+const channels = [
+  {
+    icon: 'phone',
+    title: 'Call our team',
+    value: business.phone,
+    href: `tel:${business.tel}`,
+    cta: 'Call now',
+  },
+  {
+    icon: 'whatsapp',
+    title: 'WhatsApp',
+    value: 'Message us directly',
+    href: whatsapp(),
+    cta: 'Start chat',
+    external: true,
+  },
+  {
+    icon: 'mail',
+    title: 'Email',
+    value: business.email,
+    href: `mailto:${business.email}`,
+    cta: 'Write to us',
+  },
+  {
+    icon: 'location',
+    title: 'Visit',
+    value: business.locality,
+    href: business.maps,
+    cta: 'Get directions',
+    external: true,
+  },
+];
+const tips = [
+  'Product name(s) and the pack size you need',
+  'Your business type — pharmacy, clinic, hospital or trade',
+  'Your city / state for supply discussion',
+];
+---
+
+<Layout
+  title="Contact & Business Enquiries"
+  description="Contact DP Life Remedies in Ramgarh, Panchkula. Call +91 79000 01029, WhatsApp or prepare a product, wholesale or healthcare trade enquiry."
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Contact', path: '/contact/' },
+  ]}
+>
+  <PageHero
+    eyebrow="Contact us"
+    title="Let’s talk"
+    accent="healthcare business."
+    text="A product question, a wholesale requirement or the start of a trade partnership — get in touch with DP Life Remedies."
+    crumbs={[{ name: 'Contact' }]}
+    compact
+  />
+
+  <section class="channels" aria-label="Ways to reach us">
+    <div class="container">
+      <ul class="channel-grid">
+        {channels.map((c, i) => (
+          <li data-reveal style={`--d: ${i * 70}ms`}>
+            <a
+              href={c.href}
+              {...(c.external
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+            >
+              <span class="icon-tile">
+                <Icon name={c.icon} size={24} />
+              </span>
+              <span class="channel-title">{c.title}</span>
+              <strong>{c.value}</strong>
+              <span class="channel-cta">
+                {c.cta} <Icon name="arrow" size={16} />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section
+    class="section contact-main"
+    id="enquiry"
+    aria-label="Business enquiry form"
+  >
+    <div class="container contact-grid">
+      <div class="form-card" data-reveal>
+        <EnquiryForm />
+      </div>
+      <aside class="contact-aside">
+        <div class="tips-card" data-reveal="right">
+          <p class="aside-title">To help us respond faster</p>
+          <ul>
+            {tips.map((t) => (
+              <li>
+                <Icon name="check" size={18} /> {t}
+              </li>
+            ))}
+          </ul>
+          <p class="tips-note">
+            <Icon name="shield" size={16} /> Please share business requirements
+            only — patient information is not needed.
+          </p>
+        </div>
+        <div class="office-mini" data-reveal="right">
+          <p class="aside-title">Office address</p>
+          <address>
+            <strong>{business.name}</strong>
+            {business.addressLines.map((line) => (
+              <span>{line}</span>
+            ))}
+          </address>
+          <p class="footer-gst light">
+            <Icon name="badge" size={16} /> GSTIN{' '}
+            <strong>{business.gstin}</strong>
+          </p>
+          <a
+            class="map-card small"
+            href={business.maps}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open DP Life Remedies location in Google Maps"
+          >
+            <span class="map-grid" aria-hidden="true"></span>
+            <span class="map-road one" aria-hidden="true"></span>
+            <span class="map-road two" aria-hidden="true"></span>
+            <span class="map-pin">
+              <Icon name="location" size={26} />
+            </span>
+            <span class="map-label">
+              <strong>Ramgarh, Panchkula</strong>
+              <small>Open in Google Maps</small>
+            </span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>

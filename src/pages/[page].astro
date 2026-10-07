@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { legal } from '../data/legal';
+import { business } from '../data/business';
+export function getStaticPaths() {
+  return Object.entries(legal).map(([page, content]) => ({
+    params: { page },
+    props: { content, page },
+  }));
+}
+const { content, page } = Astro.props;
+const anchor = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+---
+
+<Layout
+  title={content.title}
+  description={content.intro}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: content.title, path: `/${page}/` },
+  ]}
+>
+  <PageHero
+    eyebrow="Website information"
+    title={content.title}
+    text={content.intro}
+    crumbs={[{ name: content.title }]}
+    compact
+  />
+  <section class="section">
+    <div class="container legal-grid">
+      <nav class="legal-toc" aria-label="On this page">
+        <p class="aside-title">On this page</p>
+        <ol>
+          {content.sections.map(([title]) => (
+            <li>
+              <a href={`#${anchor(title)}`}>{title}</a>
+            </li>
+          ))}
+        </ol>
+        <p class="legal-date">Last updated: 7 October 2026</p>
+      </nav>
+      <div class="legal-content">
+        {content.sections.map(([title, text], i) => (
+          <section id={anchor(title)}>
+            <span class="legal-num">0{i + 1}</span>
+            <h2>{title}</h2>
+            <p>{text}</p>
+          </section>
+        ))}
+        <div class="legal-contact">
+          <Icon name="location" size={20} />
+          <p>
+            <strong>{business.name}</strong>
+            <br />
+            {business.address}
+          </p>
+          <a class="link-arrow" href="/contact/">
+            Contact DP Life Remedies <Icon name="arrow" size={16} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,45 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProductExplorer from '../../components/ProductExplorer.astro';
+import PackCluster from '../../components/PackCluster.astro';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import { divisions, products } from '../../data/products';
+const featured = ['daybone', 'dp-q10', 'dpate-liv'].map((s) =>
+  products.find((p) => p.slug === s)!,
+);
+---
+
+<Layout
+  title="Product Divisions — Pharmaceutical & Healthcare Range"
+  description="Browse every DP Life Remedies product by division: tablets, softgel capsules, syrups, oral solutions and protein nutrition. Filter by ingredient, segment and dosage form."
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Product Divisions', path: '/product-divisions/' },
+  ]}
+>
+  <PageHero
+    eyebrow="Product divisions"
+    title="Our healthcare"
+    accent="product range."
+    text="Explore the DP Life Remedies portfolio by dosage form. Filter by ingredient, therapeutic segment or pack, then talk to our team about your requirement."
+    crumbs={[{ name: 'Product Divisions' }]}
+  >
+    <div slot="actions" class="hero-stats">
+      <span>
+        <Icon name="grid" size={16} /> {divisions.length} divisions
+      </span>
+      <span>
+        <Icon name="box" size={16} /> {products.length} formulations
+      </span>
+      <span>
+        <Icon name="shield" size={16} /> For trade &amp; healthcare
+        professionals
+      </span>
+    </div>
+    <PackCluster items={featured} />
+  </PageHero>
+  <ProductExplorer />
+  <CTA />
+</Layout>

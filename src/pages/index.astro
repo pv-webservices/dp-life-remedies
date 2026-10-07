@@ -1,0 +1,343 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Principles from '../components/Principles.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import ContactPanel from '../components/ContactPanel.astro';
+import {
+  divisions,
+  products,
+  productsIn,
+  countLabel,
+  productImage,
+} from '../data/products';
+import { audiences, business } from '../data/business';
+import { steps } from '../data/content';
+import { brand, generated, generatedSrcset, largest } from '../data/media';
+
+const marquee = [
+  ...divisions.map((d) => d.name),
+  ...products.map((p) => p.name),
+];
+const storage = generated('wholesale-storage');
+const counter = generated('pharmacy-counter');
+const collage = ['daybone-d3', 'dp-q10', 'lacvac-fiber', 'dprun-xt'].map(
+  (slug) => products.find((p) => p.slug === slug)!,
+);
+---
+
+<Layout title="Pharmaceutical & Healthcare Products Wholesaler">
+  <Hero />
+
+  <div class="marquee on-dark" aria-hidden="true">
+    <div class="marquee-track">
+      {[0, 1].map(() => (
+        <ul>
+          {marquee.map((item) => (
+            <li>
+              <Icon name="leaf" size={16} />
+              {item}
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+
+  <section class="section divisions-section" aria-labelledby="divisions-title">
+    <div class="container">
+      <div class="section-head split" data-reveal>
+        <div>
+          <p class="eyebrow">Our product range</p>
+          <h2 id="divisions-title">
+            Healthcare in every form.{' '}
+            <span class="accent">Five divisions.</span>
+          </h2>
+        </div>
+        <div class="head-aside">
+          <p>
+            Explore the DP Life Remedies portfolio by dosage form — from tablet
+            formulations to syrups, oral solutions and protein nutrition.
+          </p>
+          <a class="link-arrow" href="/product-divisions/">
+            View the complete range <Icon name="arrow" size={18} />
+          </a>
+        </div>
+      </div>
+      <div class="bento">
+        {divisions.map((d, i) => {
+          const items = productsIn(d.slug);
+          return (
+            <a
+              class:list={['bento-tile', { feature: i === 0 }]}
+              href={`/product-divisions/${d.slug}/`}
+              data-reveal
+              style={`--d: ${i * 70}ms`}
+            >
+              <span class="bento-top">
+                <span class="icon-tile">
+                  <Icon name={d.icon} size={24} />
+                </span>
+                <span class="bento-count">{countLabel(items.length)}</span>
+              </span>
+              <span class="bento-copy">
+                <strong>{d.name}</strong>
+                <span>{d.text}</span>
+              </span>
+              <span class="bento-media">
+                {items.slice(0, i === 0 ? 3 : 1).map((p) => (
+                  <img
+                    src={productImage(p.slug, i === 0 ? 640 : 320)}
+                    width={i === 0 ? 640 : 320}
+                    height={i === 0 ? 480 : 240}
+                    loading="lazy"
+                    decoding="async"
+                    alt={`${p.name} packaging`}
+                  />
+                ))}
+              </span>
+              <span class="bento-go" aria-hidden="true">
+                <Icon name="arrow-up-right" size={20} />
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface rail-section" aria-labelledby="rail-title">
+    <div class="container">
+      <div class="section-head split" data-reveal>
+        <div>
+          <p class="eyebrow">From our portfolio</p>
+          <h2 id="rail-title">
+            A closer look at <span class="accent">our range.</span>
+          </h2>
+        </div>
+        <div class="head-aside rail-head-aside">
+          <p>
+            Composition, dosage form and pack details for every DP Life Remedies
+            product.
+          </p>
+          <div class="rail-controls">
+            <button
+              class="icon-btn"
+              type="button"
+              data-rail-prev
+              aria-label="Previous products"
+            >
+              <Icon name="arrow-left" size={20} />
+            </button>
+            <button
+              class="icon-btn"
+              type="button"
+              data-rail-next
+              aria-label="Next products"
+            >
+              <Icon name="arrow" size={20} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rail" data-rail>
+      <div
+        class="rail-track"
+        data-rail-track
+        tabindex="0"
+        role="region"
+        aria-label="Product showcase, scroll horizontally"
+      >
+        {products.map((p, i) => (
+          <ProductCard
+            product={p}
+            index={i}
+            sizes="(max-width: 600px) 80vw, 360px"
+          />
+        ))}
+      </div>
+      <div class="container rail-foot">
+        <div class="rail-progress" aria-hidden="true">
+          <span data-rail-bar></span>
+        </div>
+        <a class="btn navy" href="/product-divisions/">
+          Browse all products <Icon name="arrow" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about-home" aria-labelledby="about-title">
+    <div class="container about-grid">
+      <div class="about-media" data-reveal="left">
+        <figure class="about-main">
+          {storage ? (
+            <img
+              src={largest(storage).src}
+              srcset={generatedSrcset(storage)}
+              sizes="(max-width: 900px) 92vw, 44vw"
+              width={largest(storage).width}
+              height={largest(storage).height}
+              loading="lazy"
+              alt={storage.alt}
+            />
+          ) : (
+            <img
+              src={brand.doctor.src}
+              srcset={brand.doctor.srcset}
+              sizes="(max-width: 900px) 70vw, 30vw"
+              width={brand.doctor.width}
+              height={brand.doctor.height}
+              loading="lazy"
+              alt={brand.doctor.alt}
+            />
+          )}
+        </figure>
+        <div class="about-card">
+          <span class="icon-tile">
+            <Icon name="location" size={24} />
+          </span>
+          <span>
+            <small>Based in</small>
+            <strong>{business.locality}</strong>
+          </span>
+        </div>
+        <div class="about-stamp" aria-hidden="true">
+          <img
+            src="/media/brand/logo-160.webp"
+            width="160"
+            height="115"
+            alt=""
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <div class="about-copy" data-reveal="right">
+        <p class="eyebrow">About DP Life Remedies</p>
+        <h2 id="about-title">
+          Your partner in <span class="accent">healthcare distribution.</span>
+        </h2>
+        <p class="lede">
+          Based in Ramgarh, Panchkula, DP Life Remedies is a pharmaceutical
+          products wholesaler with a portfolio spanning medicines,
+          nutraceuticals and nutrition products.
+        </p>
+        <p>
+          We welcome product and business enquiries from pharmacies, hospitals,
+          clinics and healthcare trade partners.
+        </p>
+        <ul class="audience-list">
+          {audiences.map(([icon, label]) => (
+            <li>
+              <span class="icon-tile blue">
+                <Icon name={icon} size={22} />
+              </span>
+              {label}
+            </li>
+          ))}
+        </ul>
+        <div class="btn-row">
+          <a class="btn navy" href="/about/">
+            Get to know us <Icon name="arrow" size={18} />
+          </a>
+          <a class="link-arrow" href="/why-us/">
+            Why DP Life Remedies <Icon name="arrow" size={16} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section why-home on-dark" aria-labelledby="why-title">
+    <div class="container why-grid">
+      <div class="why-sticky">
+        <p class="eyebrow">Why DP Life Remedies</p>
+        <h2 id="why-title">
+          Health. Trust. Care.{' '}
+          <span class="accent">In every conversation.</span>
+        </h2>
+        <p class="lede">
+          A useful trade conversation starts with the details. Explore the
+          product, then talk to us about composition, pack size and supply.
+        </p>
+        <a class="btn light" href="/why-us/">
+          Our approach <Icon name="arrow" size={18} />
+        </a>
+      </div>
+      <Principles variant="stack" />
+    </div>
+  </section>
+
+  <section class="section process-home" aria-labelledby="process-title">
+    <div class="container process-grid">
+      <div class="process-visual" data-reveal="left">
+        {counter ? (
+          <img
+            class="process-photo"
+            src={largest(counter).src}
+            srcset={generatedSrcset(counter)}
+            sizes="(max-width: 900px) 92vw, 44vw"
+            width={largest(counter).width}
+            height={largest(counter).height}
+            loading="lazy"
+            alt={counter.alt}
+          />
+        ) : (
+          <div class="collage">
+            {collage.map((p) => (
+              <a
+                class={`stage ${p.color}`}
+                href={`/products/${p.slug}/`}
+                aria-label={`View ${p.name}`}
+              >
+                <img
+                  src={productImage(p.slug, 640)}
+                  width="640"
+                  height="480"
+                  loading="lazy"
+                  alt=""
+                />
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+      <div>
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">How to enquire</p>
+          <h2 id="process-title">
+            A simple start to a <span class="accent">lasting partnership.</span>
+          </h2>
+        </div>
+        <ol class="steps">
+          {steps.map(([icon, title, text], i) => (
+            <li data-reveal style={`--d: ${i * 90}ms`}>
+              <span class="step-icon">
+                <Icon name={icon} size={22} />
+              </span>
+              <span class="step-num">Step 0{i + 1}</span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="section surface enquiry-home"
+    id="enquiry"
+    aria-label="Business enquiry"
+  >
+    <div class="container enquiry-grid">
+      <ContactPanel />
+      <div class="form-card" data-reveal>
+        <EnquiryForm title="Start a trade conversation." />
+      </div>
+    </div>
+  </section>
+</Layout>

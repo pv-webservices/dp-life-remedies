@@ -1,0 +1,21 @@
+---
+import Icon from './Icon.astro';
+import { principles } from '../data/content';
+interface Props {
+  variant?: 'stack' | 'grid';
+}
+const { variant = 'grid' } = Astro.props;
+---
+
+<ol class:list={['principles', variant]}>
+  {principles.map(([icon, title, text], i) => (
+    <li class="principle" data-reveal style={`--d: ${(i % 4) * 80}ms`}>
+      <span class="principle-num">0{i + 1}</span>
+      <span class="icon-tile">
+        <Icon name={icon} size={26} />
+      </span>
+      <h3>{title}</h3>
+      <p>{text}</p>
+    </li>
+  ))}
+</ol>

@@ -1,0 +1,26 @@
+---
+import { productImage, type Product } from '../data/products';
+interface Props {
+  items: Product[];
+}
+const { items } = Astro.props;
+const shown = items.slice(0, 3);
+---
+
+<div class:list={['pack-cluster', `count-${shown.length}`]}>
+  {shown.map((p, i) => (
+    <a
+      class={`stage ${p.color}`}
+      href={`/products/${p.slug}/`}
+      aria-label={`View ${p.name}`}
+    >
+      <img
+        src={productImage(p.slug, 640)}
+        width="640"
+        height="480"
+        alt=""
+        fetchpriority={i === 0 ? 'high' : undefined}
+      />
+    </a>
+  ))}
+</div>

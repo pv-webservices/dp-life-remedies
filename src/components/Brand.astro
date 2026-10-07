@@ -1,0 +1,28 @@
+---
+interface Props {
+  light?: boolean;
+}
+const { light = false } = Astro.props;
+---
+
+<a
+  href="/"
+  class:list={['brand', { light }]}
+  aria-label="DP Life Remedies — home"
+>
+  <span class="brand-mark">
+    <img
+      src="/media/brand/logo-160.webp"
+      srcset="/media/brand/logo-160.webp 1x, /media/brand/logo-320.webp 2x"
+      width="160"
+      height="115"
+      alt=""
+    />
+  </span>
+  <span class="brand-word">
+    <strong>DP Life Remedies</strong>
+    <small>
+      Health <i>•</i> Trust <i>•</i> Care
+    </small>
+  </span>
+</a>

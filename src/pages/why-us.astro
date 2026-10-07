@@ -1,0 +1,140 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Principles from '../components/Principles.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import { steps } from '../data/content';
+import { brand } from '../data/media';
+const approach = [
+  [
+    'search',
+    'Product clarity',
+    'Explore composition and packaging information before enquiring.',
+  ],
+  [
+    'message',
+    'Direct contact',
+    'Call, email or prepare a WhatsApp message to our team.',
+  ],
+  [
+    'truck',
+    'Supply discussion',
+    'Confirm current product details and availability directly.',
+  ],
+] as const;
+---
+
+<Layout
+  title="Why DP Life Remedies"
+  description="Explore the DP Life Remedies approach to product information, professional trade enquiries and supply coordination."
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Why Us', path: '/why-us/' },
+  ]}
+>
+  <PageHero
+    eyebrow="Why DP Life Remedies"
+    title="A thoughtful approach to"
+    accent="healthcare business."
+    text="Product information, straightforward communication and a professional conversation about your requirement."
+    crumbs={[{ name: 'Why Us' }]}
+  >
+    <figure class="hero-figure portrait">
+      <img
+        src={brand.doctor.src}
+        srcset={brand.doctor.srcset}
+        sizes="(max-width: 960px) 70vw, 30vw"
+        width={brand.doctor.width}
+        height={brand.doctor.height}
+        alt={brand.doctor.alt}
+        fetchpriority="high"
+      />
+      <figcaption class="glass">
+        <img src="/media/brand/logo-160.webp" width="160" height="115" alt="" />
+        Health • Trust • Care
+      </figcaption>
+    </figure>
+  </PageHero>
+
+  <section class="section" aria-labelledby="principles-title">
+    <div class="container">
+      <div class="section-head split" data-reveal>
+        <div>
+          <p class="eyebrow">What you can expect</p>
+          <h2 id="principles-title">
+            Four commitments, <span class="accent">one conversation.</span>
+          </h2>
+        </div>
+        <div class="head-aside">
+          <p>
+            How we approach every product and trade enquiry that reaches our
+            team.
+          </p>
+        </div>
+      </div>
+      <Principles />
+    </div>
+  </section>
+
+  <section class="section surface" aria-labelledby="approach-title">
+    <div class="container approach-grid">
+      <div class="approach-copy" data-reveal="left">
+        <p class="eyebrow">Our business approach</p>
+        <h2 id="approach-title">
+          Clear information. <span class="accent">Practical next steps.</span>
+        </h2>
+        <p class="lede">
+          A useful trade conversation starts with the details. We encourage you
+          to discuss the product, composition, pack size and supply requirements
+          with our team.
+        </p>
+        <p>
+          Availability and supply arrangements are confirmed directly. Our
+          catalogue provides a starting point for that conversation.
+        </p>
+        <a class="btn" href="/contact/#enquiry">
+          Discuss your requirement <Icon name="arrow" size={18} />
+        </a>
+      </div>
+      <ol class="approach-list">
+        {approach.map(([icon, title, text], i) => (
+          <li data-reveal="right" style={`--d: ${i * 100}ms`}>
+            <span class="approach-num">0{i + 1}</span>
+            <span class="icon-tile">
+              <Icon name={icon} size={24} />
+            </span>
+            <div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="journey-title">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <p class="eyebrow">How to enquire</p>
+        <h2 id="journey-title">
+          From first call to <span class="accent">coordinated supply.</span>
+        </h2>
+      </div>
+      <ol class="timeline">
+        {steps.map(([icon, title, text], i) => (
+          <li data-reveal style={`--d: ${i * 100}ms`}>
+            <span class="timeline-dot">
+              <Icon name={icon} size={22} />
+            </span>
+            <span class="step-num">Step 0{i + 1}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+  <CTA />
+</Layout>

@@ -1,0 +1,264 @@
+---
+import Icon from './Icon.astro';
+import ProductCard from './ProductCard.astro';
+import EnquiryForm from './EnquiryForm.astro';
+import {
+  divisions,
+  products,
+  productsIn,
+  divisionFor,
+  countLabel,
+  productImage,
+} from '../data/products';
+import { business, whatsapp } from '../data/business';
+import { generated, generatedSrcset, largest } from '../data/media';
+interface Props {
+  active?: string;
+}
+const { active = '' } = Astro.props;
+const division = active ? divisionFor(active) : undefined;
+const items = active ? productsIn(active) : products;
+const segmentCounts = [...new Set(items.map((p) => p.segment))].map(
+  (s) => [s, items.filter((p) => p.segment === s).length] as const,
+);
+const forms = [...new Set(items.map((p) => p.form))];
+const bannerImage = active ? generated(`division-${active}`) : undefined;
+const bannerPacks = items.slice(0, 3);
+const rangeTitle = division
+  ? `${division.name} range`
+  : 'Complete product range';
+const rangeText = division
+  ? division.text
+  : 'Every DP Life Remedies formulation across our five dosage-form divisions.';
+---
+
+<section
+  class="explorer"
+  id="range"
+  data-explorer
+  aria-labelledby="range-title"
+>
+  <div class="container">
+    <nav class="division-rail" aria-label="Product divisions">
+      <a
+        class="division-pill"
+        href="/product-divisions/#range"
+        aria-current={!active ? 'page' : undefined}
+      >
+        <span class="division-pill-icon">
+          <Icon name="grid" size={22} />
+        </span>
+        <span class="division-pill-text">
+          <strong>All products</strong>
+          <small>{countLabel(products.length)}</small>
+        </span>
+      </a>
+      {divisions.map((d) => {
+        const first = productsIn(d.slug)[0];
+        return (
+          <a
+            class="division-pill"
+            href={`/product-divisions/${d.slug}/#range`}
+            aria-current={active === d.slug ? 'page' : undefined}
+          >
+            <span class={`division-pill-thumb stage ${first.color}`}>
+              <img
+                src={productImage(first.slug, 320)}
+                width="320"
+                height="240"
+                alt=""
+                loading="lazy"
+              />
+            </span>
+            <span class="division-pill-text">
+              <strong title={d.name}>{d.short}</strong>
+              <small>{countLabel(productsIn(d.slug).length)}</small>
+            </span>
+          </a>
+        );
+      })}
+    </nav>
+
+    <div class="explorer-layout">
+      <div class="explorer-main">
+        <header class="range-banner on-dark">
+          {bannerImage && (
+            <img
+              class="range-banner-bg"
+              src={largest(bannerImage).src}
+              srcset={generatedSrcset(bannerImage)}
+              sizes="(max-width: 900px) 100vw, 50vw"
+              width={largest(bannerImage).width}
+              height={largest(bannerImage).height}
+              alt=""
+            />
+          )}
+          <span class="icon-tile">
+            <Icon name={division?.icon ?? 'grid'} size={26} />
+          </span>
+          <div class="range-banner-copy">
+            <p class="range-kicker">
+              {division ? 'Product division' : 'All divisions'} · DP Life
+              Remedies
+            </p>
+            <h2 id="range-title">{rangeTitle}</h2>
+            <p>{rangeText}</p>
+          </div>
+          {!bannerImage && (
+            <div class="range-banner-packs" aria-hidden="true">
+              {bannerPacks.map((p) => (
+                <span class={`stage ${p.color}`}>
+                  <img
+                    src={productImage(p.slug, 320)}
+                    width="320"
+                    height="240"
+                    alt=""
+                  />
+                </span>
+              ))}
+            </div>
+          )}
+          <span class="range-count">
+            <Icon name="box" size={16} />
+            {countLabel(items.length)}
+          </span>
+        </header>
+
+        <div class="toolbar" role="search" aria-label="Filter products">
+          <label class="toolbar-search">
+            <Icon name="search" size={20} />
+            <span class="sr-only">Search products by name or ingredient</span>
+            <input
+              type="search"
+              placeholder="Search by product or ingredient…"
+              autocomplete="off"
+              data-filter-q
+            />
+          </label>
+          <label class="toolbar-select">
+            <span class="sr-only">Dosage form</span>
+            <select data-filter-form>
+              <option value="">All forms</option>
+              {forms.map((f) => (
+                <option value={f}>{f}</option>
+              ))}
+            </select>
+          </label>
+          <label class="toolbar-select">
+            <span class="sr-only">Sort products</span>
+            <select data-filter-sort>
+              <option value="">Sort: Featured</option>
+              <option value="az">Name: A to Z</option>
+              <option value="za">Name: Z to A</option>
+            </select>
+          </label>
+          <div class="view-toggle" role="group" aria-label="Product layout">
+            <button
+              type="button"
+              data-view="grid"
+              aria-pressed="true"
+              aria-label="Grid view"
+            >
+              <Icon name="grid" size={18} />
+            </button>
+            <button
+              type="button"
+              data-view="list"
+              aria-pressed="false"
+              aria-label="List view"
+            >
+              <Icon name="list" size={18} />
+            </button>
+          </div>
+        </div>
+
+        {segmentCounts.length > 1 && (
+          <div
+            class="segment-chips"
+            role="group"
+            aria-label="Filter by therapeutic segment"
+          >
+            <button type="button" data-segment-filter="" aria-pressed="true">
+              All segments <small>{items.length}</small>
+            </button>
+            {segmentCounts.map(([s, n]) => (
+              <button
+                type="button"
+                data-segment-filter={s}
+                aria-pressed="false"
+              >
+                {s} <small>{n}</small>
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div class="results-bar">
+          <p aria-live="polite" data-count>
+            Showing {items.length} of {countLabel(items.length)}
+          </p>
+          <button type="button" class="link-arrow" data-reset hidden>
+            Clear filters <Icon name="close" size={14} />
+          </button>
+        </div>
+
+        <div class="p-grid" data-grid data-layout="grid">
+          {items.map((p, i) => (
+            <ProductCard
+              product={p}
+              index={i}
+              sizes="(max-width: 640px) 90vw, (max-width: 1280px) 40vw, 300px"
+            />
+          ))}
+        </div>
+
+        <div class="empty-state" data-empty hidden>
+          <span class="icon-tile blue">
+            <Icon name="search" size={26} />
+          </span>
+          <h3>No products match your filters</h3>
+          <p>
+            Try another product name or ingredient, or clear the filters to see
+            the full range.
+          </p>
+          <button type="button" class="btn sm navy" data-reset>
+            Show all products <Icon name="arrow" size={16} />
+          </button>
+        </div>
+      </div>
+
+      <aside class="explorer-aside" aria-label="Contact and quick enquiry">
+        <div class="aside-help">
+          <p class="aside-title">Talk to our team</p>
+          <p>
+            Need composition, pack or availability details? We’re a call away.
+          </p>
+          <a href={`tel:${business.tel}`}>
+            <Icon name="phone" size={18} /> {business.phone}
+          </a>
+          <a
+            href={whatsapp(division ? `the ${division.name} range` : '')}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="whatsapp" size={18} /> WhatsApp enquiry
+          </a>
+          <a href={`mailto:${business.email}`}>
+            <Icon name="mail" size={18} /> {business.email}
+          </a>
+        </div>
+        <div class="aside-form" id="quick-enquiry">
+          <EnquiryForm
+            compact
+            title="Quick enquiry"
+            text={
+              division
+                ? `Interested in our ${division.name.toLowerCase()} range?`
+                : 'Interested in our product range?'
+            }
+          />
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
