@@ -754,13 +754,19 @@
   :root {
     --header-h: 68px;
   }
-  .topbar-note,
-  .topbar-links a[href^='mailto'] {
+  .topbar-note {
     display: none;
   }
   .topbar-row {
     justify-content: center;
     min-height: 36px;
+  }
+  .topbar-links {
+    gap: 14px;
+    font-size: 0.75rem;
+  }
+  .topbar-links a {
+    gap: 6px;
   }
   .brand-mark img {
     width: 50px;

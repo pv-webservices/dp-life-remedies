@@ -90,7 +90,7 @@ const specs = [
             </a>
             <span class="tag green">{p.segment}</span>
           </div>
-          <h1>{p.name}</h1>
+          <h1>{p.name}<sup class="tm">™</sup></h1>
           <p class="pd-summary">{p.summary}</p>
           <ul class="pd-specs">
             {specs.map(([icon, label, value]) => (
@@ -176,7 +176,7 @@ const specs = [
         >
           <h2>Overview</h2>
           <p>
-            {p.name} is part of the DP Life Remedies{' '}
+            {p.name}<sup class="tm">™</sup> is part of the DP Life Remedies{' '}
             {division.name.toLowerCase()} portfolio — {p.summary}.
           </p>
           <p>
@@ -268,7 +268,7 @@ const specs = [
                       />
                     </span>
                     <span>
-                      <strong>{s.name}</strong>
+                      <strong>{s.name}<sup class="tm">™</sup></strong>
                       <small>{s.pack}</small>
                     </span>
                   </a>
@@ -376,7 +376,7 @@ const specs = [
         loading="lazy"
       />
       <p>
-        {p.name} · {p.form} · {p.pack}
+        {p.name}<sup class="tm">™</sup> · {p.form} · {p.pack}
       </p>
     </div>
   </dialog>

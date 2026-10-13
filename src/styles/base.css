@@ -490,3 +490,12 @@ p {
     transition-duration: 1ms !important;
   }
 }
+
+.tm {
+  font-size: 0.5em;
+  font-weight: 700;
+  line-height: 0;
+  margin-left: 0.15em;
+  vertical-align: super;
+  letter-spacing: 0;
+}

@@ -168,7 +168,7 @@ const storage = generated('wholesale-storage');
                 <span class="offer-num">0{i + 1}</span>
                 <span class="offer-name">
                   <strong>{d.name}</strong>
-                  <small>{items.map((p) => p.name).join(' · ')}</small>
+                  <small>{items.map((p, i) => (<>{i > 0 && ' · '}{p.name}<sup class="tm">™</sup></>))}</small>
                 </span>
                 <span class="offer-thumb stage">
                   <img
