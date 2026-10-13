@@ -89,6 +89,7 @@ export const products: Product[] = [
   {
     slug: 'daybone-d3',
     name: 'DAYBONE D3',
+    tmAfter: 'DAYBONE',
     division: 'oral-solutions',
     segment: 'Bone & Joint Care',
     form: 'Oral solution',
