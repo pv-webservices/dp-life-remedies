@@ -46,6 +46,7 @@ export type Product = {
   basis?: string;
   composition: [string, string][];
   color: string;
+  tmAfter?: string;
   note?: string;
   source: string;
 };
@@ -53,6 +54,7 @@ export const products: Product[] = [
   {
     slug: 'dpgest-300-sr',
     name: 'DPGEST-300 SR',
+    tmAfter: 'DPGEST-300',
     division: 'tablets',
     segment: 'Women’s Health',
     form: 'Sustained release tablets',
@@ -100,6 +102,7 @@ export const products: Product[] = [
   {
     slug: 'dppro-dha',
     name: 'DPpro DHA',
+    tmAfter: 'DPpro',
     division: 'protein-nutrition',
     segment: 'Nutrition',
     form: 'Protein powder',
@@ -122,6 +125,7 @@ export const products: Product[] = [
   {
     slug: 'dprun-xt',
     name: 'DPrun XT',
+    tmAfter: 'DPrun',
     division: 'tablets',
     segment: 'Nutritional Supplements',
     form: 'Film-coated tablets',
@@ -182,6 +186,7 @@ export const products: Product[] = [
   {
     slug: 'lacvac-fiber',
     name: 'LACVAC FIBER',
+    tmAfter: 'LACVAC',
     division: 'syrups',
     segment: 'Digestive Portfolio',
     form: 'Syrup',
@@ -197,6 +202,11 @@ export const products: Product[] = [
     source: 'Product image-8.jpeg',
   },
 ];
+/** Name split around the ™ mark, which sits mid-name on some pack artwork. */
+export const nameParts = (p: Product): [string, string] => {
+  const at = p.tmAfter ? p.tmAfter.length : p.name.length;
+  return [p.name.slice(0, at), p.name.slice(at)];
+};
 export type Division = (typeof divisions)[number];
 export const divisionFor = (slug: string): Division =>
   divisions.find((d) => d.slug === slug)!;

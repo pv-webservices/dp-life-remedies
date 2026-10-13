@@ -1,0 +1,9 @@
+---
+import { nameParts, type Product } from '../data/products';
+interface Props {
+  product: Product;
+}
+const [before, after] = nameParts(Astro.props.product);
+---
+
+{before}<sup class="tm">™</sup>{after}

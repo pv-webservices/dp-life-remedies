@@ -1,4 +1,5 @@
 ---
+import ProductName from '../../components/ProductName.astro';
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import Icon from '../../components/Icon.astro';
@@ -90,7 +91,7 @@ const specs = [
             </a>
             <span class="tag green">{p.segment}</span>
           </div>
-          <h1>{p.name}<sup class="tm">™</sup></h1>
+          <h1><ProductName product={p} /></h1>
           <p class="pd-summary">{p.summary}</p>
           <ul class="pd-specs">
             {specs.map(([icon, label, value]) => (
@@ -176,7 +177,7 @@ const specs = [
         >
           <h2>Overview</h2>
           <p>
-            {p.name}<sup class="tm">™</sup> is part of the DP Life Remedies{' '}
+            <ProductName product={p} /> is part of the DP Life Remedies{' '}
             {division.name.toLowerCase()} portfolio — {p.summary}.
           </p>
           <p>
@@ -268,7 +269,7 @@ const specs = [
                       />
                     </span>
                     <span>
-                      <strong>{s.name}<sup class="tm">™</sup></strong>
+                      <strong><ProductName product={s} /></strong>
                       <small>{s.pack}</small>
                     </span>
                   </a>
@@ -376,7 +377,7 @@ const specs = [
         loading="lazy"
       />
       <p>
-        {p.name}<sup class="tm">™</sup> · {p.form} · {p.pack}
+        <ProductName product={p} /> · {p.form} · {p.pack}
       </p>
     </div>
   </dialog>

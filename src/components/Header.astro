@@ -1,4 +1,5 @@
 ---
+import ProductName from './ProductName.astro';
 import Brand from './Brand.astro';
 import Icon from './Icon.astro';
 import {
@@ -106,7 +107,7 @@ const featured = ['dpgest-300-sr', 'daybone', 'dp-q10'].map((slug) =>
                           />
                         </span>
                         <span>
-                          <strong>{p.name}<sup class="tm">™</sup></strong>
+                          <strong><ProductName product={p} /></strong>
                           <small>
                             {divisionFor(p.division).name} · {p.pack}
                           </small>

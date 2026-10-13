@@ -1,4 +1,5 @@
 ---
+import ProductName from '../components/ProductName.astro';
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
@@ -168,7 +169,7 @@ const storage = generated('wholesale-storage');
                 <span class="offer-num">0{i + 1}</span>
                 <span class="offer-name">
                   <strong>{d.name}</strong>
-                  <small>{items.map((p, i) => (<>{i > 0 && ' · '}{p.name}<sup class="tm">™</sup></>))}</small>
+                  <small>{items.map((p, i) => (<>{i > 0 && ' · '}<ProductName product={p} /></>))}</small>
                 </span>
                 <span class="offer-thumb stage">
                   <img

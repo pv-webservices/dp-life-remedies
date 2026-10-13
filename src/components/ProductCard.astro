@@ -1,4 +1,5 @@
 ---
+import ProductName from './ProductName.astro';
 import Icon from './Icon.astro';
 import {
   divisionFor,
@@ -64,7 +65,7 @@ const href = `/products/${p.slug}/`;
   <div class="p-card-body">
     <p class="p-card-segment">{p.segment}</p>
     <h3>
-      <a href={href}>{p.name}<sup class="tm">™</sup></a>
+      <a href={href}><ProductName product={p} /></a>
     </h3>
     <p class="p-card-comp">
       <span>Composition</span>
