@@ -1,0 +1,28 @@
+---
+// Responsive <picture>: AVIF first, WebP fallback, explicit dimensions (no layout shift).
+// `priority` marks the above-the-fold LCP image: eager + fetchpriority="high"; otherwise lazy.
+import type { Photo } from '../data/media';
+interface Props {
+  photo: Photo;
+  sizes: string;
+  priority?: boolean;
+  class?: string;
+}
+const { photo, sizes, priority = false, class: className } = Astro.props;
+---
+
+<picture>
+  <source type="image/avif" srcset={photo.avifSrcset} sizes={sizes} />
+  <img
+    class={className}
+    src={photo.src}
+    srcset={photo.srcset}
+    sizes={sizes}
+    width={photo.width}
+    height={photo.height}
+    alt={photo.alt}
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : undefined}
+    decoding={priority ? 'sync' : 'async'}
+  />
+</picture>

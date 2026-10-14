@@ -9,6 +9,7 @@ import {
   divisionFor,
   countLabel,
   productImage,
+  productSrcset,
 } from '../data/products';
 import { business, whatsapp } from '../data/business';
 import { generated, generatedSrcset, largest } from '../data/media';
@@ -64,6 +65,8 @@ const rangeText = division
             <span class={`division-pill-thumb stage ${first.color}`}>
               <img
                 src={productImage(first.slug, 320)}
+                srcset={productSrcset(first.slug, [160, 320])}
+                sizes="64px"
                 width="320"
                 height="240"
                 alt=""
@@ -91,6 +94,7 @@ const rangeText = division
               width={largest(bannerImage).width}
               height={largest(bannerImage).height}
               alt=""
+              loading="lazy"
             />
           )}
           <span class="icon-tile">
@@ -110,9 +114,12 @@ const rangeText = division
                 <span class={`stage ${p.color}`}>
                   <img
                     src={productImage(p.slug, 320)}
+                    srcset={productSrcset(p.slug, [160, 320])}
+                    sizes="110px"
                     width="320"
                     height="240"
                     alt=""
+                    loading="lazy"
                   />
                 </span>
               ))}
@@ -249,6 +256,8 @@ const rangeText = division
         </div>
         <div class="aside-form" id="quick-enquiry">
           <EnquiryForm
+            formType="Quick enquiry (product range)"
+            uid="quick"
             compact
             title="Quick enquiry"
             text={

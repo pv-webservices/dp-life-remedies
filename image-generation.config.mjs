@@ -48,7 +48,7 @@ export const imageConfig = {
   },
   // Optimisation of generated rasters for the website.
   output: {
-    dir: 'public/media/generated',
+    dir: 'public/media/editorial',
     manifest: 'src/data/generated-media.json',
     widths: {
       landscape: [768, 1536],

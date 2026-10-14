@@ -1,0 +1,121 @@
+# Netlify: Git deploys build the Astro site into dist/.
+# Canonical origin: https://dpliferemedies.com (HTTPS, apex, trailing slash).
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# ── Redirects ────────────────────────────────────────────────────────────────
+# Netlify already forces HTTPS and serves /about as /about/ (301) via Pretty URLs.
+# These rules make www → apex a single hop and remove duplicate URLs.
+
+[[redirects]]
+  from = "http://www.dpliferemedies.com/*"
+  to = "https://dpliferemedies.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.dpliferemedies.com/*"
+  to = "https://dpliferemedies.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://dpliferemedies.com/*"
+  to = "https://dpliferemedies.com/:splat"
+  status = 301
+  force = true
+
+# /index.html and /section/index.html → clean trailing-slash URLs.
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/about/index.html"
+  to = "/about/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/why-us/index.html"
+  to = "/why-us/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/contact/index.html"
+  to = "/contact/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/product-divisions/index.html"
+  to = "/product-divisions/"
+  status = 301
+  force = true
+
+# The old /products/ listing now lives in the Product Divisions explorer.
+[[redirects]]
+  from = "/products/"
+  to = "/product-divisions/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/products"
+  to = "/product-divisions/"
+  status = 301
+  force = true
+
+# Search engines and tools sometimes request the single-file sitemap name.
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+  force = true
+
+# Unknown URLs fall through to dist/404.html, which Netlify serves with a 404 status.
+
+# ── Headers ──────────────────────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+# Hashed build assets (CSS/JS/fonts): safe to cache for a year.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Media files are not content-hashed: cache for a week, revalidate in the background.
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/favicon*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/site.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+
+# Utility pages are also marked noindex at the HTTP level.
+[[headers]]
+  for = "/thank-you/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, follow"

@@ -1,5 +1,6 @@
 // End-to-end audit of the built site. Run `npm run build && npm run preview` first.
-// Uses synthetic enquiry data and never opens a sending action.
+// Never submits a form: every request to formsubmit.co is blocked here (form delivery is
+// covered with mocked responses by scripts/test-forms.mjs).
 import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 import { readdir, readFile, mkdir, writeFile } from 'node:fs/promises';
@@ -9,6 +10,7 @@ import assert from 'node:assert/strict';
 const origin = process.env.QA_URL || 'http://127.0.0.1:4321';
 const OUT = 'output/playwright';
 const WIDTHS = [320, 375, 430, 768, 1024, 1280, 1440, 1920];
+const MISSING_PATH = '/this-page-does-not-exist/';
 await mkdir(OUT, { recursive: true });
 
 async function routesIn(dir = 'dist', prefix = '') {
@@ -44,11 +46,21 @@ async function newPage(width = 1440, opts = {}) {
     viewport: { width, height: 900 },
     ...opts,
   });
+  await context.route('https://formsubmit.co/**', (route) => {
+    errors.push(`unexpected FormSubmit request: ${route.request().url()}`);
+    return route.abort();
+  });
   const page = await context.newPage();
   page.on('pageerror', (e) => errors.push(`${page.url()}: ${e.message}`));
   page.on(
     'console',
-    (m) => m.type() === 'error' && errors.push(`${page.url()}: ${m.text()}`),
+    (m) =>
+      m.type() === 'error' &&
+      // The deliberate 404 check makes Chrome log the 404 document itself.
+      !(
+        page.url().includes(MISSING_PATH) && m.text().includes('status of 404')
+      ) &&
+      errors.push(`${page.url()}: ${m.text()}`),
   );
   return page;
 }
@@ -79,7 +91,7 @@ try {
     const res = await page.goto(origin + route, { waitUntil: 'networkidle' });
     assert.equal(res.status(), 200, `${route} status`);
     assert.ok(
-      (await page.title()).endsWith('| DP Life Remedies'),
+      (await page.title()).includes('DP Life Remedies'),
       `${route} title`,
     );
     assert.equal(await page.locator('h1').count(), 1, `${route} single h1`);
@@ -107,7 +119,12 @@ try {
     for (const width of WIDTHS) {
       await page.setViewportSize({ width, height: 900 });
       // Let media queries and layout settle after the emulated resize.
-      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+      await page.evaluate(
+        () =>
+          new Promise((r) =>
+            requestAnimationFrame(() => requestAnimationFrame(r)),
+          ),
+      );
       await page.waitForTimeout(120);
       await loadAllImages(page);
       const state = await page.evaluate(() => ({
@@ -119,7 +136,39 @@ try {
         broken: [...document.images]
           .filter((i) => i.complete && i.naturalWidth === 0)
           .map((i) => i.src),
+        // WCAG 2.5.8: visible controls at least 24×24 CSS px (inline text links are exempt).
+        smallTargets:
+          innerWidth > 430
+            ? []
+            : [
+                ...document.querySelectorAll(
+                  'a[href], button, input:not([type="hidden"]), select, textarea, summary',
+                ),
+              ]
+                .filter((el) => {
+                  if (
+                    el.closest('[hidden], dialog:not([open]), .hp-field, .mega')
+                  )
+                    return false;
+                  const style = getComputedStyle(el);
+                  if (
+                    style.display === 'inline' ||
+                    style.visibility === 'hidden'
+                  )
+                    return false;
+                  const r = el.getBoundingClientRect();
+                  return r.width > 0 && (r.width < 24 || r.height < 24);
+                })
+                .map(
+                  (el) =>
+                    `${el.tagName}.${el.className} "${(el.textContent || el.getAttribute('aria-label') || '').trim().slice(0, 30)}"`,
+                ),
       }));
+      assert.deepEqual(
+        state.smallTargets,
+        [],
+        `${route} @${width} tap targets under 24px`,
+      );
       assert.ok(
         state.overflow <= 0,
         `${route} @${width} horizontal overflow ${state.overflow}px ${state.culprits.join(', ')}`,
@@ -264,7 +313,7 @@ try {
   );
   pass('product rail controls');
 
-  // 7. Product page: tabs, lightbox, form.
+  // 7. Product page: tabs, lightbox, enquiry form wiring (delivery itself: test-forms.mjs).
   await ex.goto(`${origin}/products/daybone/`, { waitUntil: 'networkidle' });
   assert.ok(await ex.locator('#panel-composition').isHidden());
   await ex.focus('#tab-overview');
@@ -283,42 +332,12 @@ try {
     await form.locator('[data-product-select]').inputValue(),
     'DAYBONE',
   );
-  await form.locator('button[value="email"]').click();
-  assert.ok(
-    await form.locator('[data-draft-panel]').isHidden(),
-    'invalid form blocked',
+  assert.equal(
+    await form.getAttribute('action'),
+    'https://formsubmit.co/dpliferemedies@gmail.com',
+    'form posts to FormSubmit',
   );
-  await form.locator('[name="name"]').fill('QA Tester');
-  await form.locator('[name="phone"]').fill('12');
-  await form.locator('[name="business"]').fill('QA Pharmacy');
-  await form
-    .locator('[name="message"]')
-    .fill('Synthetic verification enquiry.');
-  await form.locator('[name="consent"]').check();
-  await form.locator('button[value="email"]').click();
-  assert.ok(
-    await form.locator('[data-draft-panel]').isHidden(),
-    'short phone rejected',
-  );
-  await form.locator('[name="phone"]').fill('+91 98765 43210');
-  await form.locator('button[value="email"]').click();
-  assert.ok(
-    (await form.locator('[data-draft-link]').getAttribute('href')).startsWith(
-      'mailto:dpliferemedies@gmail.com',
-    ),
-  );
-  await form.locator('button[value="whatsapp"]').click();
-  assert.ok(
-    (await form.locator('[data-draft-link]').getAttribute('href')).startsWith(
-      'https://wa.me/917900001029',
-    ),
-  );
-  assert.ok(
-    (await form.locator('[data-draft-text]').textContent()).includes(
-      'Product: DAYBONE',
-    ),
-  );
-  pass('product page: tabs, lightbox, enquiry validation and drafts');
+  pass('product page: tabs, lightbox, enquiry form wired to FormSubmit');
 
   // 8. Contact form preselects product from query.
   await ex.goto(`${origin}/contact/?product=dp-q10#enquiry`, {
@@ -327,13 +346,80 @@ try {
   assert.equal(await ex.inputValue('#enquiry [data-product-select]'), 'DP-Q10');
   pass('contact: product preselected from query');
 
-  // 9. Redirect.
-  const redirect = await ex.request.get(`${origin}/products/`);
-  assert.ok(
-    (await redirect.text()).includes('/product-divisions/'),
-    '/products/ redirects',
+  // 9. Unknown URLs get the branded 404 page with a real 404 status.
+  const missing = await ex.goto(`${origin}${MISSING_PATH}`, {
+    waitUntil: 'networkidle',
+  });
+  assert.equal(missing.status(), 404, '404 status');
+  assert.ok((await ex.locator('h1').textContent()).includes('back on track'));
+  assert.equal(
+    await ex.locator('meta[name="robots"]').getAttribute('content'),
+    'noindex, follow',
   );
-  pass('/products/ redirect');
+  assert.equal(await ex.locator('link[rel="canonical"]').count(), 0);
+  const axe404 = await new AxeBuilder({ page: ex })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .analyze();
+  assert.deepEqual(
+    axe404.violations.map((v) => v.id),
+    [],
+    '404 axe',
+  );
+  results.axeChecks++;
+  pass('404: status 404, noindex, no canonical, no axe violations');
+
+  // 10. Keyboard: skip link first, visible focus, lands on <main>.
+  await ex.goto(`${origin}/`, { waitUntil: 'networkidle' });
+  await ex.keyboard.press('Tab');
+  await ex.waitForTimeout(400); // skip link slides in
+  const skip = await ex.evaluate(() => {
+    const el = document.activeElement;
+    const r = el.getBoundingClientRect();
+    return { cls: el.className, visible: r.top >= 0 && r.height > 0 };
+  });
+  assert.equal(skip.cls, 'skip-link', 'skip link is the first tab stop');
+  assert.ok(skip.visible, 'skip link visible on focus');
+  await ex.keyboard.press('Enter');
+  assert.equal(
+    await ex.evaluate(() => document.activeElement.id),
+    'main',
+    'skip link moves focus to main',
+  );
+  const unfocused = [];
+  for (let i = 0; i < 25; i++) {
+    await ex.keyboard.press('Tab');
+    const info = await ex.evaluate(() => {
+      const el = document.activeElement;
+      const s = getComputedStyle(el);
+      return {
+        name: `${el.tagName}.${el.className}`,
+        shown:
+          (s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0) ||
+          s.boxShadow !== 'none',
+      };
+    });
+    if (!info.shown) unfocused.push(info.name);
+  }
+  assert.deepEqual(
+    unfocused,
+    [],
+    'every focused element shows a focus indicator',
+  );
+  pass('keyboard: skip link, focus visible on 25 tab stops');
+
+  // 11. Reduced motion: no hero animation, reveal content visible.
+  const still = await newPage(1440, { reducedMotion: 'reduce' });
+  await still.goto(`${origin}/`, { waitUntil: 'networkidle' });
+  const motion = await still.evaluate(() => ({
+    motionClass: document.documentElement.classList.contains('motion-ok'),
+    h1: getComputedStyle(document.querySelector('h1')).animationName,
+    marquee: getComputedStyle(document.querySelector('.marquee-track'))
+      .animationName,
+  }));
+  assert.equal(motion.motionClass, false, 'reduced motion: no motion-ok class');
+  assert.equal(motion.h1, 'none', 'reduced motion: hero static');
+  assert.equal(motion.marquee, 'none', 'reduced motion: marquee static');
+  pass('reduced motion respected');
 
   assert.deepEqual(errors, [], 'console/page errors');
 } finally {

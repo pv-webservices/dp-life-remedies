@@ -2,26 +2,37 @@ export const legal = {
   'privacy-policy': {
     title: 'Privacy Policy',
     intro: 'How this website handles your business enquiry details.',
+    description:
+      'How DP Life Remedies handles the details you share through website enquiry forms, which are delivered by email via FormSubmit.',
+    updated: '14 October 2026',
     sections: [
       [
         'Information you choose to share',
-        'Our enquiry form asks for business contact details, product interest and a requirement message. Please do not include patient information, medical records or other sensitive personal information.',
+        'Our enquiry forms ask for your name, mobile number, email address and a requirement message, and optionally your business name, city, enquiry type and product of interest. Please do not include patient information, medical records or other sensitive personal information.',
       ],
       [
-        'Draft-based enquiry forms',
-        'The form validates and prepares a draft in your browser. This website does not send the form to a server or save its contents in a database. Opening an email or WhatsApp draft passes the text to the app or service you choose. You decide whether to send it.',
+        'How enquiries are delivered',
+        'When you press Send enquiry, the details you entered, the address of the page you sent it from and the time of submission are sent through FormSubmit (formsubmit.co), a third-party form-delivery service, to the DP Life Remedies Gmail inbox (dpliferemedies@gmail.com). FormSubmit processes the submission to deliver it as an email, and Google stores it in that Gmail account; both handle it under their own privacy policies. This website does not save enquiries in its own database.',
       ],
       [
-        'External services',
-        'Email, WhatsApp and Google Maps links open external services. Those providers handle information under their own policies. Hosting providers may process standard technical request information as part of serving the website.',
+        'How we use your details',
+        'DP Life Remedies uses the details you send only to reply to your enquiry and to discuss your business requirement. Your email address is used so our reply goes directly to you.',
+      ],
+      [
+        'Spam protection',
+        'A hidden field and a short timing check help filter automated spam before a form is sent. No CAPTCHA, tracking or profiling is used.',
+      ],
+      [
+        'WhatsApp, email and maps',
+        'Send via WhatsApp, email and Google Maps links open external services, which handle information under their own policies. Nothing is sent to WhatsApp unless you choose to send the message in your own app. Hosting providers may process standard technical request information as part of serving the website.',
       ],
       [
         'Browser storage',
-        'The website does not use analytics, advertising cookies or local storage for enquiry information. Form content is held in the current page until you leave or refresh it.',
+        'While you fill in a form, its contents are kept in your browser’s session storage for that tab so they are not lost if the page reloads. This copy stays on your device and is deleted after your enquiry is sent or when you close the tab. The website does not use analytics or advertising cookies.',
       ],
       [
-        'Enquiry follow-up',
-        'If you send an enquiry through an external service, DP Life Remedies receives the details you send to respond to your business question. Contact dpliferemedies@gmail.com for questions about information you have shared.',
+        'Your choices',
+        'Contact dpliferemedies@gmail.com or call +91 79000 01029 to ask about, correct or delete information you have shared with us.',
       ],
     ],
   },
@@ -29,6 +40,9 @@ export const legal = {
     title: 'Terms & Conditions',
     intro:
       'Terms for using this product information and business enquiry website.',
+    description:
+      'Terms for using the DP Life Remedies product information and business enquiry website, including enquiries, product information and content use.',
+    updated: '14 October 2026',
     sections: [
       [
         'Website purpose',
@@ -40,7 +54,7 @@ export const legal = {
       ],
       [
         'Business enquiries',
-        'An enquiry or prepared message does not confirm an order, stock reservation, price or supply commitment. Any supply arrangements are discussed and confirmed separately with the business.',
+        'An enquiry does not confirm an order, stock reservation, price or supply commitment. Any supply arrangements are discussed and confirmed separately with the business.',
       ],
       [
         'Use of content',
@@ -56,6 +70,9 @@ export const legal = {
     title: 'Product Disclaimer',
     intro:
       'General product and trade information for healthcare professionals and business partners.',
+    description:
+      'General product and trade information for healthcare professionals and business partners of DP Life Remedies. Not individual medical advice.',
+    updated: '7 October 2026',
     sections: [
       [
         'Professional information',

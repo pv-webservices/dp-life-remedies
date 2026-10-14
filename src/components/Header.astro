@@ -8,6 +8,7 @@ import {
   productsIn,
   countLabel,
   productImage,
+  productSrcset,
   divisionFor,
 } from '../data/products';
 import { business, whatsapp } from '../data/business';
@@ -100,6 +101,8 @@ const featured = ['dpgest-300-sr', 'daybone', 'dp-q10'].map((slug) =>
                         <span class={`stage ${p.color}`}>
                           <img
                             src={productImage(p.slug, 320)}
+                            srcset={productSrcset(p.slug, [160, 320])}
+                            sizes="88px"
                             width="320"
                             height="240"
                             alt=""
@@ -107,7 +110,9 @@ const featured = ['dpgest-300-sr', 'daybone', 'dp-q10'].map((slug) =>
                           />
                         </span>
                         <span>
-                          <strong><ProductName product={p} /></strong>
+                          <strong>
+                            <ProductName product={p} />
+                          </strong>
                           <small>
                             {divisionFor(p.division).name} · {p.pack}
                           </small>

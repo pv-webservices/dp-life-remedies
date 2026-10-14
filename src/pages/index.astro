@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Icon from '../components/Icon.astro';
+import Logo from '../components/Logo.astro';
+import Photo from '../components/Photo.astro';
 import ProductCard from '../components/ProductCard.astro';
 import Principles from '../components/Principles.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
@@ -12,6 +14,7 @@ import {
   productsIn,
   countLabel,
   productImage,
+  productSrcset,
 } from '../data/products';
 import { audiences, business } from '../data/business';
 import { steps } from '../data/content';
@@ -28,7 +31,10 @@ const collage = ['daybone-d3', 'dp-q10', 'lacvac-fiber', 'dprun-xt'].map(
 );
 ---
 
-<Layout title="Pharmaceutical & Healthcare Products Wholesaler">
+<Layout
+  title="DP Life Remedies – Pharmaceutical Wholesaler in Panchkula"
+  rawTitle
+>
   <Hero />
 
   <div class="marquee on-dark" aria-hidden="true">
@@ -90,6 +96,12 @@ const collage = ['daybone-d3', 'dp-q10', 'lacvac-fiber', 'dprun-xt'].map(
                 {items.slice(0, i === 0 ? 3 : 1).map((p) => (
                   <img
                     src={productImage(p.slug, i === 0 ? 640 : 320)}
+                    srcset={productSrcset(p.slug, [160, 320, 480, 640])}
+                    sizes={
+                      i === 0
+                        ? '(max-width: 900px) 42vw, 300px'
+                        : '(max-width: 900px) 30vw, 200px'
+                    }
                     width={i === 0 ? 640 : 320}
                     height={i === 0 ? 480 : 240}
                     loading="lazy"
@@ -155,7 +167,7 @@ const collage = ['daybone-d3', 'dp-q10', 'lacvac-fiber', 'dprun-xt'].map(
           <ProductCard
             product={p}
             index={i}
-            sizes="(max-width: 600px) 80vw, 360px"
+            sizes="(max-width: 1100px) 272px, 350px"
           />
         ))}
       </div>
@@ -185,15 +197,7 @@ const collage = ['daybone-d3', 'dp-q10', 'lacvac-fiber', 'dprun-xt'].map(
               alt={storage.alt}
             />
           ) : (
-            <img
-              src={brand.doctor.src}
-              srcset={brand.doctor.srcset}
-              sizes="(max-width: 900px) 70vw, 30vw"
-              width={brand.doctor.width}
-              height={brand.doctor.height}
-              loading="lazy"
-              alt={brand.doctor.alt}
-            />
+            <Photo photo={brand.doctor} sizes="(max-width: 900px) 70vw, 30vw" />
           )}
         </figure>
         <div class="about-card">
@@ -206,13 +210,7 @@ const collage = ['daybone-d3', 'dp-q10', 'lacvac-fiber', 'dprun-xt'].map(
           </span>
         </div>
         <div class="about-stamp" aria-hidden="true">
-          <img
-            src="/media/brand/logo-160.webp"
-            width="160"
-            height="115"
-            alt=""
-            loading="lazy"
-          />
+          <Logo size={76} lazy />
         </div>
       </div>
       <div class="about-copy" data-reveal="right">
@@ -336,7 +334,11 @@ const collage = ['daybone-d3', 'dp-q10', 'lacvac-fiber', 'dprun-xt'].map(
     <div class="container enquiry-grid">
       <ContactPanel />
       <div class="form-card" data-reveal>
-        <EnquiryForm title="Start a trade conversation." />
+        <EnquiryForm
+          formType="Home page enquiry"
+          uid="home"
+          title="Start a trade conversation."
+        />
       </div>
     </div>
   </section>

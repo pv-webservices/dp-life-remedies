@@ -65,7 +65,7 @@ export const products: Product[] = [
       ['Natural Micronised Progesterone IP (sustained release)', '300 mg'],
     ],
     color: 'pink',
-    source: 'Product image-1.jpeg',
+    source: 'dpgest-300-sr-artwork.jpeg',
   },
   {
     slug: 'daybone',
@@ -84,7 +84,7 @@ export const products: Product[] = [
       ['Cyanocobalamin', '2.5 mcg'],
     ],
     color: 'green',
-    source: 'Product image-2.jpeg',
+    source: 'daybone-artwork.jpeg',
   },
   {
     slug: 'daybone-d3',
@@ -98,7 +98,7 @@ export const products: Product[] = [
     basis: 'Per 4–5 ml, as stated in supplied artwork',
     composition: [['Cholecalciferol (Vitamin D3) IP', '60,000 IU']],
     color: 'gold',
-    source: 'Product image-3.jpeg',
+    source: 'daybone-d3-artwork.jpeg',
   },
   {
     slug: 'dppro-dha',
@@ -121,7 +121,7 @@ export const products: Product[] = [
     ],
     color: 'green',
     note: 'Chocolate flavour is shown on the supplied packaging.',
-    source: 'Product image-4.jpeg',
+    source: 'dppro-dha-artwork.jpeg',
   },
   {
     slug: 'dprun-xt',
@@ -139,7 +139,7 @@ export const products: Product[] = [
     ],
     color: 'pink',
     note: 'Please contact our team for confirmed ingredient strengths and current pack details.',
-    source: 'Product image-5.jpeg',
+    source: 'dprun-xt-artwork.jpeg',
   },
   {
     slug: 'dp-q10',
@@ -160,7 +160,7 @@ export const products: Product[] = [
       ['Vitamin E', '15 IU'],
     ],
     color: 'blue',
-    source: 'Product image-6.jpeg',
+    source: 'dp-q10-artwork.jpeg',
   },
   {
     slug: 'dpate-liv',
@@ -182,7 +182,7 @@ export const products: Product[] = [
     ],
     color: 'pink',
     note: 'The supplied label describes this product as a nutraceutical, not for medicinal use.',
-    source: 'Product image-7.webp',
+    source: 'dpate-liv-artwork.webp',
   },
   {
     slug: 'lacvac-fiber',
@@ -200,7 +200,7 @@ export const products: Product[] = [
     ],
     color: 'green',
     note: 'Orange flavour is shown on the supplied packaging.',
-    source: 'Product image-8.jpeg',
+    source: 'lacvac-fiber-artwork.jpeg',
   },
 ];
 /** Name split around the ™ mark, which sits mid-name on some pack artwork. */
@@ -215,13 +215,15 @@ export const productsIn = (slug: string): Product[] =>
   products.filter((p) => p.division === slug);
 export const segments: string[] = [...new Set(products.map((p) => p.segment))];
 export const forms: string[] = [...new Set(products.map((p) => p.form))];
-export type ImageWidth = 320 | 640 | 1080;
+export type ImageWidth = 160 | 320 | 480 | 640 | 1080;
 export const productImage = (slug: string, width: ImageWidth = 640): string =>
   `/media/products/${slug}-${width}.webp`;
-export const productSrcset = (slug: string): string =>
-  ([320, 640, 1080] as const)
-    .map((w) => `${productImage(slug, w)} ${w}w`)
-    .join(', ');
+export const productSrcset = (
+  slug: string,
+  widths: readonly ImageWidth[] = [320, 480, 640, 1080],
+): string => widths.map((w) => `${productImage(slug, w)} ${w}w`).join(', ');
+/** 1200×630 Open Graph card for a product. */
+export const productOgImage = (slug: string): string => `/media/og/${slug}.jpg`;
 export const searchText = (p: Product): string =>
   [p.name, p.summary, p.segment, p.form, ...p.composition.map(([i]) => i)]
     .join(' ')

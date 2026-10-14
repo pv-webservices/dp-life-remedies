@@ -1,8 +1,15 @@
 ---
 import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import Photo from './Photo.astro';
 import { brand } from '../data/media';
 import { business } from '../data/business';
-import { divisions, products, productImage } from '../data/products';
+import {
+  divisions,
+  products,
+  productImage,
+  productSrcset,
+} from '../data/products';
 const shelf = ['dpgest-300-sr', 'daybone', 'dppro-dha'].map((slug) =>
   products.find((p) => p.slug === slug)!,
 );
@@ -28,7 +35,8 @@ const shelf = ['dpgest-300-sr', 'daybone', 'dppro-dha'].map((slug) =>
     <div class="hero-copy">
       <p class="hero-kicker">
         <span class="pulse" aria-hidden="true"></span>
-        Pharmaceutical Marketing &amp; Healthcare Solutions · {business.locality}
+        Pharmaceutical Marketing &amp; Healthcare Solutions ·{' '}
+        {business.locality}
       </p>
       <h1 id="hero-title">
         Quality healthcare products,
@@ -65,28 +73,20 @@ const shelf = ['dpgest-300-sr', 'daybone', 'dppro-dha'].map((slug) =>
 
     <div class="hero-visual">
       <figure class="hero-photo">
-        <img
-          src={brand.family.src}
-          srcset={brand.family.srcset}
+        <Photo
+          photo={brand.family}
           sizes="(max-width: 900px) 92vw, 46vw"
-          width={brand.family.width}
-          height={brand.family.height}
-          alt={brand.family.alt}
-          fetchpriority="high"
+          priority
         />
       </figure>
       <div class="hero-badge glass">
-        <img src="/media/brand/logo-160.webp" width="160" height="115" alt="" />
+        <Logo size={54} />
         <span>
           <strong>Health • Trust • Care</strong>
           <small>Together for a healthier tomorrow</small>
         </span>
       </div>
-      <a
-        class="hero-shelf"
-        href="/product-divisions/"
-        aria-label="Browse the DP Life Remedies product range"
-      >
+      <a class="hero-shelf" href="/product-divisions/">
         <span class="hero-shelf-head">
           <span>
             <small>Our portfolio</small>
@@ -103,9 +103,12 @@ const shelf = ['dpgest-300-sr', 'daybone', 'dppro-dha'].map((slug) =>
             <span class={`stage ${p.color}`}>
               <img
                 src={productImage(p.slug, 320)}
+                srcset={productSrcset(p.slug, [160, 320, 480])}
+                sizes="(max-width: 900px) 28vw, 140px"
                 width="320"
                 height="240"
                 alt=""
+                decoding="async"
               />
             </span>
           ))}

@@ -6,12 +6,12 @@
     "quality": "high",
     "files": [
       {
-        "src": "/media/generated/wholesale-storage-768.webp",
+        "src": "/media/editorial/wholesale-storage-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/media/generated/wholesale-storage-1536.webp",
+        "src": "/media/editorial/wholesale-storage-1536.webp",
         "width": 1536,
         "height": 1024
       }
@@ -24,12 +24,12 @@
     "quality": "high",
     "files": [
       {
-        "src": "/media/generated/pharmacy-counter-768.webp",
+        "src": "/media/editorial/pharmacy-counter-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/media/generated/pharmacy-counter-1536.webp",
+        "src": "/media/editorial/pharmacy-counter-1536.webp",
         "width": 1536,
         "height": 1024
       }
@@ -42,12 +42,12 @@
     "quality": "medium",
     "files": [
       {
-        "src": "/media/generated/division-tablets-768.webp",
+        "src": "/media/editorial/division-tablets-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/media/generated/division-tablets-1536.webp",
+        "src": "/media/editorial/division-tablets-1536.webp",
         "width": 1536,
         "height": 1024
       }
@@ -60,12 +60,12 @@
     "quality": "medium",
     "files": [
       {
-        "src": "/media/generated/division-softgel-capsules-768.webp",
+        "src": "/media/editorial/division-softgel-capsules-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/media/generated/division-softgel-capsules-1536.webp",
+        "src": "/media/editorial/division-softgel-capsules-1536.webp",
         "width": 1536,
         "height": 1024
       }
@@ -78,12 +78,12 @@
     "quality": "medium",
     "files": [
       {
-        "src": "/media/generated/division-syrups-768.webp",
+        "src": "/media/editorial/division-syrups-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/media/generated/division-syrups-1536.webp",
+        "src": "/media/editorial/division-syrups-1536.webp",
         "width": 1536,
         "height": 1024
       }
@@ -96,12 +96,12 @@
     "quality": "medium",
     "files": [
       {
-        "src": "/media/generated/division-oral-solutions-768.webp",
+        "src": "/media/editorial/division-oral-solutions-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/media/generated/division-oral-solutions-1536.webp",
+        "src": "/media/editorial/division-oral-solutions-1536.webp",
         "width": 1536,
         "height": 1024
       }
@@ -114,12 +114,12 @@
     "quality": "medium",
     "files": [
       {
-        "src": "/media/generated/division-protein-nutrition-768.webp",
+        "src": "/media/editorial/division-protein-nutrition-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/media/generated/division-protein-nutrition-1536.webp",
+        "src": "/media/editorial/division-protein-nutrition-1536.webp",
         "width": 1536,
         "height": 1024
       }
@@ -132,12 +132,12 @@
     "quality": "medium",
     "files": [
       {
-        "src": "/media/generated/cta-texture-768.webp",
+        "src": "/media/editorial/cta-texture-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/media/generated/cta-texture-1536.webp",
+        "src": "/media/editorial/cta-texture-1536.webp",
         "width": 1536,
         "height": 1024
       }

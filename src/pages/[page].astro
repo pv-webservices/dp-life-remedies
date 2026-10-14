@@ -20,7 +20,7 @@ const anchor = (title: string) =>
 
 <Layout
   title={content.title}
-  description={content.intro}
+  description={content.description}
   crumbs={[
     { name: 'Home', path: '/' },
     { name: content.title, path: `/${page}/` },
@@ -44,7 +44,7 @@ const anchor = (title: string) =>
             </li>
           ))}
         </ol>
-        <p class="legal-date">Last updated: 7 October 2026</p>
+        <p class="legal-date">Last updated: {content.updated}</p>
       </nav>
       <div class="legal-content">
         {content.sections.map(([title, text], i) => (

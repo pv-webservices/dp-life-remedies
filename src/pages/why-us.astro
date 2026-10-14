@@ -4,6 +4,8 @@ import PageHero from '../components/PageHero.astro';
 import Principles from '../components/Principles.astro';
 import CTA from '../components/CTA.astro';
 import Icon from '../components/Icon.astro';
+import Logo from '../components/Logo.astro';
+import Photo from '../components/Photo.astro';
 import { steps } from '../data/content';
 import { brand } from '../data/media';
 const approach = [
@@ -26,7 +28,7 @@ const approach = [
 ---
 
 <Layout
-  title="Why DP Life Remedies"
+  title="Why Choose Us"
   description="Explore the DP Life Remedies approach to product information, professional trade enquiries and supply coordination."
   crumbs={[
     { name: 'Home', path: '/' },
@@ -41,17 +43,13 @@ const approach = [
     crumbs={[{ name: 'Why Us' }]}
   >
     <figure class="hero-figure portrait">
-      <img
-        src={brand.doctor.src}
-        srcset={brand.doctor.srcset}
+      <Photo
+        photo={brand.doctor}
         sizes="(max-width: 960px) 70vw, 30vw"
-        width={brand.doctor.width}
-        height={brand.doctor.height}
-        alt={brand.doctor.alt}
-        fetchpriority="high"
+        priority
       />
       <figcaption class="glass">
-        <img src="/media/brand/logo-160.webp" width="160" height="115" alt="" />
+        <Logo size={44} />
         Health • Trust • Care
       </figcaption>
     </figure>

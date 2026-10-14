@@ -14,6 +14,7 @@ import {
   productImage,
   productSrcset,
   countLabel,
+  productOgImage,
 } from '../../data/products';
 import { principles } from '../../data/content';
 import { business, whatsapp } from '../../data/business';
@@ -27,6 +28,17 @@ const { product: p } = Astro.props;
 const division = divisionFor(p.division);
 const related = relatedFor(p);
 const siblings = productsIn(p.division).filter((x) => x.slug !== p.slug);
+// Meta description: keep within ~170 characters by choosing the longest closing line that fits.
+const DESCRIPTION_MAX = 170;
+const lead = `${p.name}: ${p.summary}. ${p.form}, ${p.pack}.`;
+const description =
+  [
+    'View composition and pack details and send a trade enquiry to DP Life Remedies.',
+    'Composition, pack details and trade enquiries.',
+    'DP Life Remedies.',
+  ]
+    .map((close) => `${lead} ${close}`)
+    .find((text) => text.length <= DESCRIPTION_MAX) ?? lead;
 const specs = [
   ['pill', 'Dosage form', p.form],
   ['box', 'Pack size', p.pack],
@@ -37,8 +49,9 @@ const specs = [
 
 <Layout
   title={`${p.name} — ${p.form}`}
-  description={`${p.name}: ${p.summary}. ${p.form}, ${p.pack}. View composition and pack details and send a trade enquiry to DP Life Remedies.`}
-  image={productImage(p.slug, 1080)}
+  description={description}
+  image={productOgImage(p.slug)}
+  imageAlt={`${p.name} ${p.form.toLowerCase()} packaging`}
   crumbs={[
     { name: 'Home', path: '/' },
     { name: 'Product Divisions', path: '/product-divisions/' },
@@ -91,7 +104,9 @@ const specs = [
             </a>
             <span class="tag green">{p.segment}</span>
           </div>
-          <h1><ProductName product={p} /></h1>
+          <h1>
+            <ProductName product={p} />
+          </h1>
           <p class="pd-summary">{p.summary}</p>
           <ul class="pd-specs">
             {specs.map(([icon, label, value]) => (
@@ -262,6 +277,8 @@ const specs = [
                     <span class={`stage ${s.color}`}>
                       <img
                         src={productImage(s.slug, 320)}
+                        srcset={productSrcset(s.slug, [160, 320])}
+                        sizes="72px"
                         width="320"
                         height="240"
                         alt=""
@@ -269,7 +286,9 @@ const specs = [
                       />
                     </span>
                     <span>
-                      <strong><ProductName product={s} /></strong>
+                      <strong>
+                        <ProductName product={s} />
+                      </strong>
                       <small>{s.pack}</small>
                     </span>
                   </a>
@@ -324,7 +343,11 @@ const specs = [
         product={p.name}
       />
       <div class="form-card" data-reveal>
-        <EnquiryForm product={p.name} />
+        <EnquiryForm
+          formType="Product page enquiry"
+          uid="product"
+          product={p.name}
+        />
       </div>
     </div>
   </section>

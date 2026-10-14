@@ -9,7 +9,7 @@ import {
   divisions,
   productsIn,
   countLabel,
-  productImage,
+  productOgImage,
 } from '../../data/products';
 export function getStaticPaths() {
   return divisions.map((division) => ({
@@ -25,7 +25,8 @@ const segments = [...new Set(items.map((p) => p.segment))];
 <Layout
   title={`${division.name} — Product Range`}
   description={`${division.text} Browse ${countLabel(items.length)} from DP Life Remedies with composition and pack details.`}
-  image={productImage(items[0].slug, 1080)}
+  image={productOgImage(items[0].slug)}
+  imageAlt={`${items[0].name} packaging from the DP Life Remedies ${division.name.toLowerCase()} range`}
   crumbs={[
     { name: 'Home', path: '/' },
     { name: 'Product Divisions', path: '/product-divisions/' },

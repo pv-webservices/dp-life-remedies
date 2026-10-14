@@ -1,0 +1,20 @@
+---
+// Decorative logo emblem, served at 1x/2x/3x of the largest CSS width it is shown at.
+interface Props {
+  /** Largest rendered CSS width in px. */
+  size?: number;
+  lazy?: boolean;
+}
+const { size = 62, lazy = false } = Astro.props;
+---
+
+<img
+  src="/media/brand/logo-64.webp"
+  srcset="/media/brand/logo-64.webp 64w, /media/brand/logo-128.webp 128w, /media/brand/logo-192.webp 192w"
+  sizes={`${size}px`}
+  width="64"
+  height="46"
+  alt=""
+  loading={lazy ? 'lazy' : 'eager'}
+  decoding="async"
+/>

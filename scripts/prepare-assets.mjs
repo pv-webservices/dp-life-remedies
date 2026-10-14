@@ -1,36 +1,42 @@
-// Prepares optimised, responsive WebP assets from the client-supplied source images.
-// Original client files live in source-assets/ and are preserved; nothing here is AI-generated or retouched.
+// Prepares optimised, responsive web assets from the full-resolution masters in source-files/.
+// Masters are never published; nothing here is AI-generated or retouched.
+// Output: public/media/{products,people,brand}, public/media/og and the favicon set in public/.
 import sharp from 'sharp';
-import { mkdir, rm } from 'node:fs/promises';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 
+const SRC = 'source-files';
 const OUT = 'public/media';
-for (const dir of ['products', 'brand'])
+for (const dir of ['products', 'people', 'brand', 'og'])
   await rm(`${OUT}/${dir}`, { recursive: true, force: true });
-await mkdir(`${OUT}/products`, { recursive: true });
-await mkdir(`${OUT}/brand`, { recursive: true });
+for (const dir of ['products', 'people', 'brand', 'og'])
+  await mkdir(`${OUT}/${dir}`, { recursive: true });
 
-// Clean white-background packshots (Product image-Na.webp) → trimmed, centred 4:3 stages.
-const products = [
-  ['dpgest-300-sr', 1],
-  ['daybone', 2],
-  ['daybone-d3', 3],
-  ['dppro-dha', 4],
-  ['dprun-xt', 5],
-  ['dp-q10', 6],
-  ['dpate-liv', 7],
-  ['lacvac-fiber', 8],
+// Clean white-background packshots → trimmed, centred 4:3 stages at every width the layout uses.
+const PRODUCTS = [
+  'dpgest-300-sr',
+  'daybone',
+  'daybone-d3',
+  'dppro-dha',
+  'dprun-xt',
+  'dp-q10',
+  'dpate-liv',
+  'lacvac-fiber',
 ];
-const PRODUCT_WIDTHS = [320, 640, 1080];
+const PRODUCT_WIDTHS = [160, 320, 480, 640, 1080];
 const STAGE_RATIO = 3 / 4;
 const FILL = 0.84;
+const OG = { width: 1200, height: 630 };
 
-for (const [slug, n] of products) {
-  const trimmed = await sharp(`source-assets/Product image-${n}a.webp`)
+const trimmedPackshot = (slug) =>
+  sharp(`${SRC}/products/${slug}-packshot.webp`)
     .trim({ background: '#ffffff', threshold: 12 })
-    .toBuffer({ resolveWithObject: true });
+    .toBuffer();
+
+for (const slug of PRODUCTS) {
+  const trimmed = await trimmedPackshot(slug);
   for (const width of PRODUCT_WIDTHS) {
     const height = Math.round(width * STAGE_RATIO);
-    const inner = await sharp(trimmed.data)
+    const inner = await sharp(trimmed)
       .resize(Math.round(width * FILL), Math.round(height * FILL), {
         fit: 'inside',
       })
@@ -39,59 +45,128 @@ for (const [slug, n] of products) {
       create: { width, height, channels: 3, background: '#ffffff' },
     })
       .composite([{ input: inner, gravity: 'centre' }])
-      .webp({ quality: width > 700 ? 82 : 84 })
+      .webp({ quality: width > 700 ? 80 : 78 })
       .toFile(`${OUT}/products/${slug}-${width}.webp`);
   }
+  // Open Graph card: packshot centred on white, 1200×630 JPEG (widest platform support).
+  const ogInner = await sharp(trimmed)
+    .resize(Math.round(OG.width * 0.8), Math.round(OG.height * 0.84), {
+      fit: 'inside',
+    })
+    .toBuffer();
+  await sharp({ create: { ...OG, channels: 3, background: '#ffffff' } })
+    .composite([{ input: ogInner, gravity: 'centre' }])
+    .jpeg({ quality: 82, mozjpeg: true })
+    .toFile(`${OUT}/og/${slug}.jpg`);
 }
 
-// Brand photography from the supplied creatives, cropped clear of overlaid text and swooshes.
+// People photography cropped from the supplied brand creatives, clear of overlaid text.
+const FAMILY_BOX = { left: 0, top: 302, width: 800, height: 527 };
 const photos = [
   {
     name: 'family',
-    src: 'source-assets/wesbite image-1.jpeg',
-    box: { left: 0, top: 302, width: 800, height: 527 },
+    src: `${SRC}/brand/brand-creative-family.jpeg`,
+    box: FAMILY_BOX,
     widths: [480, 800],
   },
   {
     name: 'doctor',
-    src: 'source-assets/wesbite image-2.jpeg',
+    src: `${SRC}/brand/brand-creative-doctor.jpeg`,
     box: { left: 1050, top: 0, width: 486, height: 700 },
     widths: [360, 486],
   },
 ];
 for (const { name, src, box, widths } of photos) {
-  for (const width of widths)
-    await sharp(src)
-      .extract(box)
-      .resize(width)
-      .webp({ quality: 84 })
-      .toFile(`${OUT}/brand/${name}-${width}.webp`);
+  for (const width of widths) {
+    const image = sharp(src).extract(box).resize(width);
+    await image
+      .clone()
+      .webp({ quality: 74 })
+      .toFile(`${OUT}/people/${name}-${width}.webp`);
+    await image
+      .clone()
+      .avif({ quality: 52 })
+      .toFile(`${OUT}/people/${name}-${width}.avif`);
+  }
 }
 
-// Logo emblem (retina) and favicon.
-const emblem = { left: 211, top: 385, width: 785, height: 564 };
-for (const width of [160, 320])
-  await sharp('source-assets/dp line remedies website logo.jpeg')
-    .extract(emblem)
+// Logo emblem: sized for the 44–62 px slots it fills (1x, 2x, 3x) plus a square schema logo.
+const LOGO = `${SRC}/brand/dp-life-remedies-logo.jpeg`;
+const EMBLEM = { left: 211, top: 385, width: 785, height: 564 };
+for (const width of [64, 128, 192])
+  await sharp(LOGO)
+    .extract(EMBLEM)
     .resize(width)
-    .webp({ quality: 92 })
+    .webp({ quality: 90 })
     .toFile(`${OUT}/brand/logo-${width}.webp`);
-await sharp('source-assets/dp line remedies website logo.jpeg')
-  .extract(emblem)
-  .resize(64, 64, { fit: 'contain', background: '#ffffff' })
-  .png()
-  .toFile('public/favicon.png');
-await sharp('source-assets/dp line remedies website logo.jpeg')
-  .extract(emblem)
-  .resize(180, 180, { fit: 'contain', background: '#ffffff' })
-  .png()
-  .toFile('public/apple-touch-icon.png');
+await sharp(LOGO)
+  .extract(EMBLEM)
+  .resize(512, 512, { fit: 'contain', background: '#ffffff' })
+  .png({ compressionLevel: 9, palette: true })
+  .toFile(`${OUT}/brand/logo-512.png`);
 
-// Social sharing image: brand family photo, 1200×630.
-await sharp('source-assets/wesbite image-1.jpeg')
-  .extract({ left: 0, top: 302, width: 800, height: 527 })
-  .resize(1200, 630, { fit: 'cover', position: 'top' })
-  .webp({ quality: 80 })
-  .toFile(`${OUT}/brand/social.webp`);
+// Default social card: brand family photo, 1200×630.
+await sharp(`${SRC}/brand/brand-creative-family.jpeg`)
+  .extract(FAMILY_BOX)
+  .resize(OG.width, OG.height, { fit: 'cover', position: 'top' })
+  .jpeg({ quality: 80, mozjpeg: true })
+  .toFile(`${OUT}/og/default.jpg`);
 
-console.log('Prepared product, brand and icon assets in public/media.');
+// Favicons: the "DP" emblem on a solid white square, padded so it stays legible at 16–48 px.
+const ICON_BOX = { left: 270, top: 395, width: 680, height: 500 };
+const iconPng = (size, pad = 0.08) =>
+  sharp(LOGO)
+    .extract(ICON_BOX)
+    .resize(
+      Math.round(size * (1 - pad * 2)),
+      Math.round(size * (1 - pad * 2)),
+      {
+        fit: 'contain',
+        background: '#ffffff',
+      },
+    )
+    .extend({
+      top: Math.round(size * pad),
+      bottom: size - Math.round(size * (1 - pad * 2)) - Math.round(size * pad),
+      left: Math.round(size * pad),
+      right: size - Math.round(size * (1 - pad * 2)) - Math.round(size * pad),
+      background: '#ffffff',
+    })
+    .flatten({ background: '#ffffff' })
+    .png({ compressionLevel: 9, palette: size >= 180, quality: 90 })
+    .toBuffer();
+
+const icons = {
+  'favicon-48x48.png': 48,
+  'favicon-96x96.png': 96,
+  'apple-touch-icon.png': 180,
+  'web-app-manifest-192x192.png': 192,
+  'web-app-manifest-512x512.png': 512,
+};
+for (const [file, size] of Object.entries(icons))
+  await writeFile(`public/${file}`, await iconPng(size));
+
+// favicon.ico: a single 48×48 PNG-encoded entry (valid ICO, supported by all current browsers).
+const ico48 = await iconPng(48);
+const header = Buffer.alloc(22);
+header.writeUInt16LE(0, 0); // reserved
+header.writeUInt16LE(1, 2); // type: icon
+header.writeUInt16LE(1, 4); // image count
+header.writeUInt8(48, 6); // width
+header.writeUInt8(48, 7); // height
+header.writeUInt8(0, 8); // palette
+header.writeUInt8(0, 9); // reserved
+header.writeUInt16LE(1, 10); // colour planes
+header.writeUInt16LE(32, 12); // bits per pixel
+header.writeUInt32LE(ico48.length, 14); // data size
+header.writeUInt32LE(22, 18); // data offset
+await writeFile('public/favicon.ico', Buffer.concat([header, ico48]));
+
+// favicon.svg: the supplied logo is raster-only, so the SVG wraps a 96 px rendering (tab sizes are 16–32 px).
+const svgPng = (await iconPng(96)).toString('base64');
+await writeFile(
+  'public/favicon.svg',
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192"><rect width="192" height="192" fill="#ffffff"/><image width="192" height="192" href="data:image/png;base64,${svgPng}"/></svg>\n`,
+);
+
+console.log('Prepared product, people, brand, Open Graph and favicon assets.');

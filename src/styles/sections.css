@@ -277,7 +277,8 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy > * {
-    animation: rise 900ms var(--ease) both;
+    /* Transform-only: hero text is the LCP element, so it must never start invisible. */
+    animation: lift 900ms var(--ease) both;
   }
   .hero-copy > :nth-child(2) {
     animation-delay: 80ms;
@@ -314,6 +315,11 @@
     animation: ping 2.4s var(--ease) infinite;
   }
 }
+@keyframes lift {
+  from {
+    transform: translateY(18px);
+  }
+}
 @keyframes rise {
   from {
     opacity: 0;
@@ -323,11 +329,9 @@
 @keyframes unveil {
   from {
     clip-path: inset(12% 0 0 18% round 240px 36px 36px 36px);
-    opacity: 0;
   }
   to {
     clip-path: inset(0 0 0 0 round 240px 36px 36px 36px);
-    opacity: 1;
   }
 }
 @keyframes settle {
@@ -986,6 +990,8 @@
   padding: clamp(36px, 5.5vw, 80px);
   overflow: hidden;
   border-radius: 36px;
+  /* Background texture: 768 px file on phones, 1536 px on wider screens. */
+  --cta-image: var(--cta-image-lg, none);
   background:
     linear-gradient(90deg, rgb(6 23 51 / 0%) 40%, rgb(6 23 51 / 55%) 100%),
     var(--cta-image, none) center / cover no-repeat,
@@ -1000,6 +1006,11 @@
       var(--navy-800) 60%,
       var(--blue-700)
     );
+}
+@media (max-width: 800px) {
+  .cta-card {
+    --cta-image: var(--cta-image-sm, none);
+  }
 }
 .cta-swoosh {
   position: absolute;
@@ -1139,6 +1150,9 @@
 }
 .breadcrumb a {
   color: rgb(255 255 255 / 72%);
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
   transition: color var(--t-fast);
 }
 .breadcrumb a:hover {

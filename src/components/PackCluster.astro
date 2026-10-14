@@ -1,5 +1,5 @@
 ---
-import { productImage, type Product } from '../data/products';
+import { productImage, productSrcset, type Product } from '../data/products';
 interface Props {
   items: Product[];
 }
@@ -16,9 +16,12 @@ const shown = items.slice(0, 3);
     >
       <img
         src={productImage(p.slug, 640)}
+        srcset={productSrcset(p.slug, [320, 480, 640])}
+        sizes="(max-width: 560px) 200px, 340px"
         width="640"
         height="480"
         alt=""
+        loading="eager"
         fetchpriority={i === 0 ? 'high' : undefined}
       />
     </a>

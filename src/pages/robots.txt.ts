@@ -1,10 +1,8 @@
 import type { APIRoute } from 'astro';
-export const GET: APIRoute = () => {
-  const base = import.meta.env.PUBLIC_SITE_URL;
-  return new Response(
-    base
-      ? `User-agent: *\nAllow: /\nSitemap: ${new URL('/sitemap.xml', base).href}\n`
-      : 'User-agent: *\nDisallow: /\n',
-    { headers: { 'Content-Type': 'text/plain' } },
+// Allow everything (including noindex utility pages, CSS and JS) so crawlers can read the
+// noindex meta and render pages; point them at the sitemap index.
+export const GET: APIRoute = ({ site }) =>
+  new Response(
+    `User-agent: *\nAllow: /\n\nSitemap: ${new URL('/sitemap-index.xml', site).href}\n`,
+    { headers: { 'Content-Type': 'text/plain; charset=utf-8' } },
   );
-};

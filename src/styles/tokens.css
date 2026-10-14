@@ -21,6 +21,7 @@
   --ink: #0b1d3a;
   --text: #3d4d66;
   --muted: #5c6b82;
+  --error: #b3261e;
   --line: #e1e8f2;
   --line-strong: #cbd6e5;
   --surface: #f6f9fd;
@@ -35,7 +36,7 @@
   /* Typography */
   --font-display:
     'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, sans-serif;
-  --font-body: 'Manrope', system-ui, sans-serif;
+  --font-body: 'Manrope Variable', 'Manrope', system-ui, sans-serif;
   --font-accent: 'Instrument Serif', Georgia, serif;
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;

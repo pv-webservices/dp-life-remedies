@@ -3,6 +3,8 @@ import ProductName from '../components/ProductName.astro';
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
+import Logo from '../components/Logo.astro';
+import Photo from '../components/Photo.astro';
 import CTA from '../components/CTA.astro';
 import { business, audiences } from '../data/business';
 import { values } from '../data/content';
@@ -11,6 +13,7 @@ import {
   productsIn,
   countLabel,
   productImage,
+  productSrcset,
 } from '../data/products';
 import { brand, generated, generatedSrcset, largest } from '../data/media';
 const storage = generated('wholesale-storage');
@@ -32,17 +35,13 @@ const storage = generated('wholesale-storage');
     crumbs={[{ name: 'About Us' }]}
   >
     <figure class="hero-figure">
-      <img
-        src={brand.family.src}
-        srcset={brand.family.srcset}
+      <Photo
+        photo={brand.family}
         sizes="(max-width: 960px) 92vw, 40vw"
-        width={brand.family.width}
-        height={brand.family.height}
-        alt={brand.family.alt}
-        fetchpriority="high"
+        priority
       />
       <figcaption class="glass">
-        <img src="/media/brand/logo-160.webp" width="160" height="115" alt="" />
+        <Logo size={44} />
         Together for a healthier tomorrow
       </figcaption>
     </figure>
@@ -63,15 +62,7 @@ const storage = generated('wholesale-storage');
               alt={storage.alt}
             />
           ) : (
-            <img
-              src={brand.doctor.src}
-              srcset={brand.doctor.srcset}
-              sizes="(max-width: 900px) 70vw, 30vw"
-              width={brand.doctor.width}
-              height={brand.doctor.height}
-              loading="lazy"
-              alt={brand.doctor.alt}
-            />
+            <Photo photo={brand.doctor} sizes="(max-width: 900px) 70vw, 30vw" />
           )}
         </figure>
         <div class="about-card">
@@ -169,11 +160,20 @@ const storage = generated('wholesale-storage');
                 <span class="offer-num">0{i + 1}</span>
                 <span class="offer-name">
                   <strong>{d.name}</strong>
-                  <small>{items.map((p, i) => (<>{i > 0 && ' · '}<ProductName product={p} /></>))}</small>
+                  <small>
+                    {items.map((p, i) => (
+                      <>
+                        {i > 0 && ' · '}
+                        <ProductName product={p} />
+                      </>
+                    ))}
+                  </small>
                 </span>
                 <span class="offer-thumb stage">
                   <img
                     src={productImage(items[0].slug, 320)}
+                    srcset={productSrcset(items[0].slug, [160, 320])}
+                    sizes="120px"
                     width="320"
                     height="240"
                     alt=""

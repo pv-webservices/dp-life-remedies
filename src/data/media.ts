@@ -24,21 +24,34 @@ export const generatedSrcset = (image: GeneratedImage): string =>
 export const largest = (image: GeneratedImage): GeneratedFile =>
   image.files[image.files.length - 1];
 
-export const brand = {
+/** People photography cropped from the supplied brand creatives (AVIF + WebP). */
+export interface Photo {
+  src: string;
+  srcset: string;
+  avifSrcset: string;
+  width: number;
+  height: number;
+  alt: string;
+}
+export const brand: Record<'family' | 'doctor', Photo> = {
   family: {
-    src: '/media/brand/family-800.webp',
+    src: '/media/people/family-800.webp',
     srcset:
-      '/media/brand/family-480.webp 480w, /media/brand/family-800.webp 800w',
+      '/media/people/family-480.webp 480w, /media/people/family-800.webp 800w',
+    avifSrcset:
+      '/media/people/family-480.avif 480w, /media/people/family-800.avif 800w',
     width: 800,
     height: 527,
     alt: 'Smiling family embracing outdoors, from the DP Life Remedies brand creative',
   },
   doctor: {
-    src: '/media/brand/doctor-486.webp',
+    src: '/media/people/doctor-486.webp',
     srcset:
-      '/media/brand/doctor-360.webp 360w, /media/brand/doctor-486.webp 486w',
+      '/media/people/doctor-360.webp 360w, /media/people/doctor-486.webp 486w',
+    avifSrcset:
+      '/media/people/doctor-360.avif 360w, /media/people/doctor-486.avif 486w',
     width: 486,
     height: 700,
     alt: 'Healthcare professional in a white coat with a stethoscope, from the DP Life Remedies brand creative',
   },
-} as const;
+};

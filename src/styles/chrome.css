@@ -64,6 +64,7 @@
   gap: 26px;
 }
 .topbar-links a {
+  min-height: 32px;
   transition: color var(--t-fast);
 }
 .topbar-links a:hover {
@@ -638,6 +639,7 @@
 .footer-contact a {
   display: flex;
   gap: 12px;
+  min-height: 32px;
   line-height: 1.55;
   transition: color var(--t-fast);
 }

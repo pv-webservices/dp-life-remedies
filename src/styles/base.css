@@ -105,6 +105,10 @@ p {
   outline-offset: 3px;
   border-radius: 6px;
 }
+/* <main> only takes focus programmatically (skip link); it needs no ring. */
+#main:focus {
+  outline: none;
+}
 ::selection {
   background: var(--lime-300);
   color: var(--ink);

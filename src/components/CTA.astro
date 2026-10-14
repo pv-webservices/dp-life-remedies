@@ -21,7 +21,9 @@ const texture = generated('cta-texture');
       class="cta-card on-dark"
       data-reveal="zoom"
       style={
-        texture ? `--cta-image: url('${largest(texture).src}')` : undefined
+        texture
+          ? `--cta-image-sm: url('${texture.files[0].src}'); --cta-image-lg: url('${largest(texture).src}')`
+          : undefined
       }
     >
       <svg class="cta-swoosh" viewBox="0 0 600 400" aria-hidden="true">

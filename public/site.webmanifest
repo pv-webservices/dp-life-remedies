@@ -1,0 +1,25 @@
+{
+  "name": "DP Life Remedies",
+  "short_name": "DP Life",
+  "description": "Pharmaceutical and healthcare products wholesaler in Ramgarh, Panchkula, Haryana.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "lang": "en-IN",
+  "theme_color": "#0a2250",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

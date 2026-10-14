@@ -1,14 +1,25 @@
 ---
+// Enquiry form delivered by FormSubmit to the client's Gmail inbox.
+// Without JavaScript it is a normal POST that FormSubmit redirects to /thank-you/.
+// With JavaScript (src/scripts/modules/forms.ts) it validates inline and sends via FormSubmit's AJAX endpoint.
 import Icon from './Icon.astro';
 import { products } from '../data/products';
 import { business } from '../data/business';
+import { FORM_ACTION, THANK_YOU_PATH } from '../data/site.mjs';
+import { FIELD_RULES } from '../scripts/modules/enquiry-validation';
 interface Props {
+  /** Shown in the email so the team knows which form was used. */
+  formType: string;
+  /** Unique per page: prefixes every id inside the form. */
+  uid: string;
   product?: string;
   compact?: boolean;
   title?: string;
   text?: string;
 }
 const {
+  formType,
+  uid,
   product = '',
   compact = false,
   title = product
@@ -16,90 +27,169 @@ const {
     : 'Tell us what you’re looking for.',
   text = 'Share your product or trade requirement with our team.',
 } = Astro.props;
+const site = Astro.site!;
+const pageUrl = new URL(Astro.url.pathname, site).href;
+const thankYou = new URL(THANK_YOU_PATH, site).href;
+const id = (name: string) => `${uid}-${name}`;
+const describedBy = (name: string, hint = false) =>
+  [hint && id(`${name}-hint`), id(`${name}-error`)].filter(Boolean).join(' ');
+const rule = FIELD_RULES;
+const spamWords =
+  'casino, crypto investment, forex signal, viagra, seo services, backlinks, guest post, loan offer';
 ---
 
-<form class:list={['enquiry-form', { compact }]} data-enquiry>
+<form
+  class:list={['enquiry-form', { compact }]}
+  action={FORM_ACTION}
+  method="POST"
+  accept-charset="UTF-8"
+  data-enquiry
+  data-form-type={formType}
+  aria-labelledby={id('title')}
+>
   <div class="form-head">
     <p class="eyebrow">Business enquiry</p>
-    <h2 class="form-title">{title}</h2>
+    <h2 class="form-title" id={id('title')}>
+      {title}
+    </h2>
     <p>{text}</p>
   </div>
+
+  <div
+    class="form-alert"
+    data-form-alert
+    role="alert"
+    tabindex="-1"
+    hidden
+  ></div>
+
+  <!-- FormSubmit configuration -->
+  <input
+    type="hidden"
+    name="_subject"
+    value={`New enquiry from website: ${formType}`}
+  />
+  <input type="hidden" name="_next" value={thankYou} />
+  <input type="hidden" name="_captcha" value="false" />
+  <input type="hidden" name="_template" value="table" />
+  <input type="hidden" name="_blacklist" value={spamWords} />
+  <input type="hidden" name="form_type" value={formType} />
+  <input type="hidden" name="page_url" value={pageUrl} data-page-url />
+  <input type="hidden" name="submitted_at" value="" data-submitted-at />
+  <div class="hp-field" aria-hidden="true">
+    <label for={id('honey')}>Leave this field empty</label>
+    <input
+      type="text"
+      id={id('honey')}
+      name="_honey"
+      tabindex="-1"
+      autocomplete="off"
+    />
+  </div>
+
   <div class="form-grid">
-    <label class="field">
-      <span>
+    <div class="field">
+      <label for={id('name')}>
         Full name <b aria-hidden="true">*</b>
-      </span>
+      </label>
       <input
+        id={id('name')}
         name="name"
         autocomplete="name"
         required
-        maxlength="100"
+        minlength={rule.name.min}
+        maxlength={rule.name.max}
         placeholder="Your full name"
+        aria-describedby={describedBy('name')}
       />
-    </label>
-    <label class="field">
-      <span>
+      <p class="field-error" id={id('name-error')} data-error-for="name"></p>
+    </div>
+    <div class="field">
+      <label for={id('phone')}>
         Mobile number <b aria-hidden="true">*</b>
-      </span>
+      </label>
       <input
+        id={id('phone')}
         name="phone"
         type="tel"
         inputmode="tel"
         autocomplete="tel"
         required
-        maxlength="20"
+        minlength="10"
+        maxlength={rule.phone.max}
+        pattern="[0-9+\(\)\- ]{10,20}"
         placeholder="+91 98XXX XXXXX"
+        aria-describedby={describedBy('phone', true)}
       />
-    </label>
-    {!compact && (
-      <label class="field">
-        <span>Email address</span>
-        <input
-          name="email"
-          type="email"
-          autocomplete="email"
-          maxlength="150"
-          placeholder="name@business.com"
-        />
+      <p class="field-hint" id={id('phone-hint')}>
+        10–15 digits
+      </p>
+      <p class="field-error" id={id('phone-error')} data-error-for="phone"></p>
+    </div>
+    <div class="field">
+      <label for={id('email')}>
+        Email address <b aria-hidden="true">*</b>
       </label>
-    )}
-    <label class="field">
-      <span>
-        Business / organisation <b aria-hidden="true">*</b>
-      </span>
       <input
-        name="business"
-        autocomplete="organization"
+        id={id('email')}
+        name="email"
+        type="email"
+        autocomplete="email"
         required
-        maxlength="150"
-        placeholder="Pharmacy, clinic or organisation"
+        maxlength={rule.email.max}
+        placeholder="name@business.com"
+        aria-describedby={describedBy('email')}
       />
-    </label>
+      <p class="field-error" id={id('email-error')} data-error-for="email"></p>
+    </div>
     {!compact && (
-      <label class="field">
-        <span>City / state</span>
+      <div class="field">
+        <label for={id('business')}>Business / organisation</label>
         <input
+          id={id('business')}
+          name="business"
+          autocomplete="organization"
+          minlength={rule.business.min}
+          maxlength={rule.business.max}
+          placeholder="Pharmacy, clinic or organisation"
+          aria-describedby={describedBy('business')}
+        />
+        <p
+          class="field-error"
+          id={id('business-error')}
+          data-error-for="business"
+        />
+      </div>
+    )}
+    {!compact && (
+      <div class="field">
+        <label for={id('city')}>City / state</label>
+        <input
+          id={id('city')}
           name="city"
           autocomplete="address-level2"
-          maxlength="100"
+          minlength={rule.city.min}
+          maxlength={rule.city.max}
           placeholder="e.g. Panchkula, Haryana"
+          aria-describedby={describedBy('city')}
         />
-      </label>
+        <p class="field-error" id={id('city-error')} data-error-for="city" />
+      </div>
     )}
     {!compact && (
-      <label class="field">
-        <span>Enquiry type</span>
-        <select name="type">
+      <div class="field">
+        <label for={id('type')}>Enquiry type</label>
+        <select id={id('type')} name="enquiry_type">
           <option>Product information</option>
           <option>Wholesale requirement</option>
           <option>Trade partnership</option>
           <option>General enquiry</option>
         </select>
-      </label>
+      </div>
     )}
-    <label class:list={['field', { 'span-2': !compact }]}>
-      <span>Product of interest</span>
-      <select name="product" data-product-select>
+    <div class:list={['field', { 'span-2': !compact }]}>
+      <label for={id('product')}>Product of interest</label>
+      <select id={id('product')} name="product" data-product-select>
         <option value="">General / multiple products</option>
         {products.map((p) => (
           <option
@@ -111,62 +201,69 @@ const {
           </option>
         ))}
       </select>
-    </label>
-    <label class:list={['field', { 'span-2': !compact }]}>
-      <span>
+    </div>
+    <div class="field span-2">
+      <label for={id('message')}>
         Requirement / message <b aria-hidden="true">*</b>
-      </span>
+      </label>
       <textarea
+        id={id('message')}
         name="message"
         required
-        minlength="10"
-        maxlength="2000"
+        minlength={rule.message.min}
+        maxlength={rule.message.max}
         rows={compact ? 3 : 4}
         placeholder="Products, pack details or business requirement. Please don’t include patient or medical records."
+        aria-describedby={describedBy('message')}
       ></textarea>
-    </label>
+      <p
+        class="field-error"
+        id={id('message-error')}
+        data-error-for="message"
+      ></p>
+    </div>
   </div>
-  <label class="consent">
-    <input type="checkbox" name="consent" required />
-    <span>
-      I agree to the use of my details for this business enquiry and have read
-      the <a href="/privacy-policy/">Privacy Policy</a>.
-    </span>
-  </label>
+
+  <div class="consent-wrap">
+    <div class="consent">
+      <input
+        type="checkbox"
+        id={id('consent')}
+        name="consent"
+        value="Yes – agreed to the Privacy Policy"
+        required
+        aria-describedby={describedBy('consent')}
+      />
+      <label for={id('consent')}>
+        I agree that DP Life Remedies may use these details to reply to my
+        enquiry, and I have read the{' '}
+        <a href="/privacy-policy/">Privacy Policy</a>.
+        <b aria-hidden="true">*</b>
+      </label>
+    </div>
+    <p
+      class="field-error"
+      id={id('consent-error')}
+      data-error-for="consent"
+    ></p>
+  </div>
+
   <div class="form-actions">
-    <button type="submit" class="btn" name="channel" value="email">
-      Prepare email <Icon name="arrow" size={18} />
+    <button type="submit" class="btn" data-submit>
+      <span data-submit-label>Send enquiry</span>
+      <Icon name="arrow" size={18} />
     </button>
-    <button type="submit" class="btn whatsapp" name="channel" value="whatsapp">
-      <Icon name="whatsapp" size={18} /> WhatsApp
+    <button type="button" class="btn whatsapp" data-whatsapp hidden>
+      <Icon name="whatsapp" size={18} /> Send via WhatsApp
     </button>
   </div>
+  <p class="form-progress" data-form-progress role="status"></p>
   <p class="form-note">
     <Icon name="info" size={15} />
-    This prepares an editable draft in your email or WhatsApp app — you review
-    and send it. Fields marked * are required.
+    <span>
+      Your enquiry is emailed to our team through FormSubmit. Fields marked *
+      are required. Prefer to talk? Call{' '}
+      <a href={`tel:${business.tel}`}>{business.phone}</a>.
+    </span>
   </p>
-  <div class="draft-panel" data-draft-panel hidden>
-    <p class="draft-status" role="status">
-      <Icon name="check" size={18} /> Your enquiry draft is ready. Review it,
-      then open your app to send.
-    </p>
-    <pre data-draft-text></pre>
-    <div class="form-actions">
-      <a data-draft-link class="btn navy">
-        Open draft <Icon name="arrow" size={18} />
-      </a>
-      <button type="button" class="btn outline" data-copy>
-        Copy enquiry
-      </button>
-    </div>
-    <p class="copy-status" data-copy-status role="status"></p>
-  </div>
 </form>
-<noscript>
-  <p class="notice">
-    Enable JavaScript to prepare an enquiry draft, or
-    <a href={`mailto:${business.email}`}>email us directly</a> or call
-    <a href={`tel:${business.tel}`}>{business.phone}</a>.
-  </p>
-</noscript>

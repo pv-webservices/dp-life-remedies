@@ -1,0 +1,55 @@
+---
+// Form confirmation page: noindex, no canonical, excluded from the sitemap (see src/data/site.mjs).
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { business, whatsapp } from '../data/business';
+import { divisions } from '../data/products';
+---
+
+<Layout
+  title="Thank You — Enquiry Received"
+  description="Thank you for contacting DP Life Remedies. Your enquiry has reached our team, who will reply using the contact details you shared."
+  noindex
+>
+  <section class="section not-found thank-you">
+    <div class="container narrow">
+      <span class="thank-you-mark" aria-hidden="true">
+        <Icon name="check" size={34} />
+      </span>
+      <p class="eyebrow">Enquiry received</p>
+      <h1>
+        Thank you. <span class="accent">We’ve got your enquiry.</span>
+      </h1>
+      <p class="lede">
+        Your details have been sent to the DP Life Remedies team. We will reply
+        using the email address or mobile number you shared.
+      </p>
+      <p>
+        Need to add something or prefer to talk? Call{' '}
+        <a href={`tel:${business.tel}`}>{business.phone}</a>, message us on{' '}
+        <a href={whatsapp()} target="_blank" rel="noopener noreferrer">
+          WhatsApp
+        </a>{' '}
+        or email <a href={`mailto:${business.email}`}>{business.email}</a>.
+      </p>
+      <div class="btn-row">
+        <a class="btn" href="/product-divisions/">
+          Continue exploring products <Icon name="arrow" size={18} />
+        </a>
+        <a class="btn outline" href="/">
+          Back to home
+        </a>
+      </div>
+      <h2 class="not-found-heading">Product divisions</h2>
+      <ul class="not-found-links">
+        {divisions.map((d) => (
+          <li>
+            <a href={`/product-divisions/${d.slug}/`}>
+              <Icon name={d.icon} size={18} /> {d.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>
